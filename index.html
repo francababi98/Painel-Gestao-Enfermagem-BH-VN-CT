@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronograma de Estágios — BH · Contagem · Venda Nova</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --roxo-900:#241046;
+    --roxo-700:#3B1E6E;
+    --roxo-500:#5B34A6;
+    --roxo-100:#EDE7F8;
+    --laranja-600:#E85D04;
+    --laranja-500:#FF6B00;
+    --laranja-100:#FFE8D6;
+    --fundo:#F7F5FB;
+    --branco:#FFFFFF;
+    --cinza-700:#4A4458;
+    --cinza-400:#9A93AB;
+    --linha:#E4DFEF;
+    --verde:#1B9E77;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--fundo);color:var(--cinza-700);padding:28px 20px 60px}
+  .wrap{max-width:1240px;margin:0 auto}
+
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+  h1{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(22px,3vw,32px);color:var(--roxo-900);line-height:1.15}
+  h1 span{color:var(--laranja-500)}
+  .sub{font-size:13.5px;color:var(--cinza-400);margin-top:6px}
+  .hoje-pill{background:var(--roxo-900);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;display:flex;align-items:center;gap:8px}
+  .hoje-pill::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--laranja-500);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  .abas{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
+  .abas button{font-family:'Sora',sans-serif;font-weight:700;font-size:14px;padding:12px 26px;border-radius:14px;border:2px solid var(--linha);background:#fff;color:var(--roxo-700);cursor:pointer;transition:all .15s}
+  .abas button:hover{border-color:var(--roxo-500);transform:translateY(-1px)}
+  .abas button.on{background:var(--roxo-900);border-color:var(--roxo-900);color:#fff;box-shadow:0 6px 18px rgba(36,16,70,.25)}
+  .abas button.on::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--laranja-500);margin-left:9px;vertical-align:middle}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:26px}
+  .card{background:var(--branco);border:1px solid var(--linha);border-radius:14px;padding:16px 18px}
+  .card .num{font-family:'Sora',sans-serif;font-weight:800;font-size:30px;color:var(--roxo-700)}
+  .card .lbl{font-size:12.5px;font-weight:600;color:var(--cinza-400);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .card.destaque .num{color:var(--laranja-500)}
+
+  .painel{background:var(--branco);border:1px solid var(--linha);border-radius:16px;padding:22px;margin-bottom:28px;overflow-x:auto}
+  .painel h2{font-family:'Sora',sans-serif;font-size:17px;color:var(--roxo-900);margin-bottom:4px}
+  .painel .dica{font-size:12.5px;color:var(--cinza-400);margin-bottom:16px}
+
+  .legenda{display:flex;flex-wrap:wrap;gap:18px;font-size:12.5px;font-weight:600;margin-bottom:18px}
+  .legenda span{display:flex;align-items:center;gap:7px}
+  .chip{width:22px;height:11px;border-radius:6px}
+  .chip.e1{background:var(--laranja-500)}
+  .chip.e2{background:var(--roxo-500)}
+  .chip.recesso{background:repeating-linear-gradient(135deg,#e9e4f2 0 4px,#f7f5fb 4px 8px);border:1px solid var(--linha)}
+  .marc-cmm{width:11px;height:11px;background:var(--roxo-900);transform:rotate(45deg);border-radius:2px}
+  .marc-fim{width:12px;height:12px;border-radius:50%;border:3px solid var(--laranja-600);background:#fff}
+  .linha-hoje-leg{width:3px;height:16px;background:var(--laranja-600);border-radius:2px}
+
+  .gantt{min-width:900px;position:relative}
+  .g-meses{display:flex;margin-left:210px;border-bottom:2px solid var(--roxo-100)}
+  .g-mes{font-size:10.5px;font-weight:700;color:var(--cinza-400);text-align:center;padding:6px 0;border-left:1px solid var(--linha);text-transform:uppercase;letter-spacing:.03em}
+  .g-mes.ano{color:var(--roxo-700)}
+  .g-body{position:relative}
+  .g-row{display:flex;align-items:center;height:46px;border-bottom:1px solid #F0EDF7;position:relative}
+  .g-row:hover{background:#FBFAFE}
+  .g-label{width:210px;flex:none;padding-right:14px;display:flex;align-items:center;gap:9px}
+  .g-turma{font-family:'Sora',sans-serif;font-weight:700;font-size:15px;color:var(--roxo-900);width:52px}
+  .turno-mini{display:flex;gap:3px}
+  .turno-mini i{font-style:normal;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:var(--roxo-100);color:var(--roxo-700)}
+  .g-status{font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+  .st-e1{background:var(--laranja-100);color:var(--laranja-600)}
+  .st-e2{background:var(--roxo-100);color:var(--roxo-700)}
+  .st-intervalo{background:#EEF6F2;color:var(--verde)}
+  .st-concluida{background:#ECEAF1;color:var(--cinza-400)}
+  .st-aguarda{background:#FFF;color:var(--cinza-400);border:1px solid var(--linha)}
+  .g-track{position:relative;flex:1;height:100%}
+  .g-grid{position:absolute;inset:0;display:flex;pointer-events:none}
+  .g-grid i{border-left:1px solid #F0EDF7;flex:none}
+  .barra{position:absolute;top:50%;transform:translateY(-50%);height:16px;border-radius:8px;cursor:pointer;transition:height .12s}
+  .barra:hover{height:22px}
+  .barra.e1{background:linear-gradient(180deg,#FF7A1A,var(--laranja-600))}
+  .barra.e2{background:linear-gradient(180deg,#6A42BC,var(--roxo-700))}
+  .marc{position:absolute;top:50%;cursor:pointer;z-index:2}
+  .marc.cmm{width:11px;height:11px;background:var(--roxo-900);transform:translate(-50%,-50%) rotate(45deg);border-radius:2px}
+  .marc.fim{width:12px;height:12px;border-radius:50%;border:3px solid var(--laranja-600);background:#fff;transform:translate(-50%,-50%)}
+  .banda-recesso{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,rgba(91,52,166,.07) 0 4px,transparent 4px 8px);pointer-events:none}
+  .linha-hoje{position:absolute;top:-26px;bottom:0;width:2px;background:var(--laranja-600);z-index:3;pointer-events:none}
+  .linha-hoje::before{content:"HOJE";position:absolute;top:0;left:50%;transform:translate(-50%,-100%);background:var(--laranja-600);color:#fff;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:.06em}
+
+  .tooltip{position:fixed;background:var(--roxo-900);color:#fff;font-size:12.5px;line-height:1.5;padding:10px 13px;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .1s;z-index:50;max-width:260px;box-shadow:0 8px 24px rgba(36,16,70,.3)}
+  .tooltip b{color:#FFB273}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:900px}
+  thead th{font-family:'Sora',sans-serif;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:#fff;background:var(--roxo-900);padding:11px 12px;text-align:left}
+  thead th.grp-e1{background:var(--laranja-600)}
+  thead th.grp-e2{background:var(--roxo-500)}
+  tbody td{padding:10px 12px;border-bottom:1px solid var(--linha);white-space:nowrap}
+  tbody tr:hover{background:#FBFAFE}
+  td.turma{font-family:'Sora',sans-serif;font-weight:700;color:var(--roxo-900)}
+  td.e1{background:#FFF7F0}
+  td.e2{background:#F7F3FC}
+  tr.ativa td.turma::after{content:"●";color:var(--laranja-500);margin-left:6px;font-size:10px;vertical-align:middle}
+  .badge-turno{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px}
+  .badge-turno.M{background:#FFF3E0;color:#B45309}
+  .badge-turno.T{background:#FFE8D6;color:var(--laranja-600)}
+  .badge-turno.N{background:var(--roxo-100);color:var(--roxo-700)}
+  .filtros{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+  .filtros button{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:999px;border:1px solid var(--linha);background:#fff;color:var(--cinza-700);cursor:pointer;transition:all .12s}
+  .filtros button:hover{border-color:var(--roxo-500)}
+  .filtros button.on{background:var(--roxo-900);border-color:var(--roxo-900);color:#fff}
+  .nota{font-size:12px;color:var(--cinza-400);margin-top:12px;line-height:1.6}
+
+  .gm-scroll{overflow-x:auto;padding-bottom:6px}
+  .gm-wrap{display:flex;align-items:flex-end;gap:5px;min-width:950px;padding-top:8px}
+  .gm-col{flex:1;display:flex;flex-direction:column;align-items:center;min-width:28px}
+  .gm-val{font-size:10.5px;font-weight:800;color:var(--roxo-900);margin-bottom:3px;font-family:'Sora',sans-serif}
+  .gm-col.pico .gm-val{color:var(--laranja-600)}
+  .gm-bar{width:100%;max-width:34px;height:170px;display:flex;flex-direction:column;justify-content:flex-end;border-radius:7px 7px 0 0;overflow:hidden;cursor:pointer}
+  .gm-seg-e2{background:linear-gradient(180deg,#6A42BC,var(--roxo-700))}
+  .gm-seg-e1{background:linear-gradient(180deg,#FF7A1A,var(--laranja-600))}
+  .gm-col.pico .gm-bar{box-shadow:0 0 0 2px var(--laranja-500)}
+  .gm-mes{height:40px;margin-top:8px;width:100%;display:flex;justify-content:center}
+  .gm-mes span{font-size:9.5px;font-weight:700;color:var(--cinza-400);transform:rotate(-55deg);white-space:nowrap;transform-origin:center}
+  .gm-mes.ano span{color:var(--roxo-700)}
+  td.pico{font-weight:800;color:var(--laranja-600)}
+  .aviso-vazio{background:var(--laranja-100);border:1px solid #FFD4AE;color:#8A4B0F;font-size:13px;padding:12px 16px;border-radius:12px;margin-bottom:16px;line-height:1.5}
+
+  .form-campo{display:grid;grid-template-columns:2fr 1.2fr repeat(3,86px) auto;gap:10px;align-items:end;margin-bottom:20px}
+  .form-campo label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:var(--cinza-400);text-transform:uppercase;letter-spacing:.04em}
+  .form-campo input,.form-campo select{font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;color:var(--roxo-900);padding:9px 11px;border:1.5px solid var(--linha);border-radius:9px;background:#FDFCFF}
+  .form-campo input:focus,.form-campo select:focus{outline:none;border-color:var(--laranja-500);background:#fff}
+  .btn-add{font-family:'Sora',sans-serif;font-weight:700;font-size:13.5px;color:#fff;background:var(--laranja-500);border:none;border-radius:10px;padding:10px 20px;cursor:pointer;transition:all .12s}
+  .btn-add:hover{background:var(--laranja-600);transform:translateY(-1px)}
+  .btn-remover{font-size:12px;font-weight:600;color:#B3261E;background:none;border:1px solid #F0D4D2;border-radius:8px;padding:5px 12px;cursor:pointer;transition:all .12s}
+  .btn-remover:hover{background:#FDF1F0;border-color:#B3261E}
+  tfoot td{padding:11px 12px;font-weight:800;color:var(--roxo-900);background:var(--roxo-100);border-bottom:none}
+  .saldo-pos{color:var(--verde)}
+  .saldo-neg{color:#B3261E}
+  .btn-regime{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:all .12s;white-space:nowrap}
+  .btn-regime.diaria{background:var(--roxo-100);color:var(--roxo-700)}
+  .btn-regime.r3x2{background:var(--laranja-100);color:var(--laranja-600)}
+  .btn-regime:hover{border-color:currentColor}
+  .seg-regime{display:flex;border:1.5px solid var(--linha);border-radius:9px;overflow:hidden}
+  .seg-regime button{flex:1;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:9px 6px;border:none;background:#FDFCFF;color:var(--cinza-400);cursor:pointer;transition:all .12s}
+  .seg-regime button.on{background:var(--roxo-900);color:#fff}
+  .btn-detalhes{font-size:12px;font-weight:600;color:var(--roxo-700);background:var(--roxo-100);border:none;border-radius:8px;padding:5px 12px;cursor:pointer;margin-right:6px;transition:all .12s}
+  .btn-detalhes:hover{background:#DFD5F2}
+  .btn-detalhes.aberto{background:var(--roxo-900);color:#fff}
+  tr.tr-detalhes>td{background:#FBFAFE;border-bottom:2px solid var(--roxo-100);padding:16px 18px}
+  .det-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px}
+  .det-grid label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:var(--cinza-400);text-transform:uppercase;letter-spacing:.04em}
+  .det-grid input,.det-grid textarea{font-family:'Inter',sans-serif;font-size:13px;color:var(--roxo-900);padding:9px 11px;border:1.5px solid var(--linha);border-radius:9px;background:#fff;resize:vertical;white-space:normal}
+  .det-grid textarea{min-height:64px}
+  .det-grid input:focus,.det-grid textarea:focus{outline:none;border-color:var(--laranja-500)}
+  @media (max-width:820px){.det-grid{grid-template-columns:1fr}}
+  .oc-titulo{font-family:'Sora',sans-serif;font-size:13px;color:var(--roxo-900);margin:16px 0 8px}
+  .oc-form{display:grid;grid-template-columns:90px 120px 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:12px}
+  .oc-form label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:var(--cinza-400);text-transform:uppercase;letter-spacing:.04em}
+  .oc-form input,.oc-form select{font-family:'Inter',sans-serif;font-size:13px;color:var(--roxo-900);padding:8px 10px;border:1.5px solid var(--linha);border-radius:9px;background:#fff}
+  .oc-form input:focus,.oc-form select:focus{outline:none;border-color:var(--laranja-500)}
+  .btn-oc{font-family:'Sora',sans-serif;font-weight:700;font-size:12.5px;color:#fff;background:var(--roxo-700);border:none;border-radius:9px;padding:9px 16px;cursor:pointer;transition:all .12s}
+  .btn-oc:hover{background:var(--roxo-900)}
+  .oc-item{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#fff;border:1px solid var(--linha);border-radius:10px;padding:8px 12px;margin-bottom:6px;font-size:13px}
+  .oc-item b{color:var(--roxo-900)}
+  .badge-oc-ativa{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:#EAF6F1;color:var(--verde);padding:3px 9px;border-radius:999px}
+  .badge-oc-fim{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:#ECEAF1;color:var(--cinza-400);padding:3px 9px;border-radius:999px}
+  .badge-oc-fut{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:var(--laranja-100);color:var(--laranja-600);padding:3px 9px;border-radius:999px}
+  .oc-vazio{font-size:12.5px;color:var(--cinza-400)}
+  .badge-oc-uni{font-size:10.5px;font-weight:700;background:var(--roxo-100);color:var(--roxo-700);padding:3px 10px;border-radius:999px;white-space:nowrap}
+  td.oc-num{font-weight:800}
+  td.oc-num .livres{font-size:11px;font-weight:600;color:var(--cinza-400)}
+  @media (max-width:820px){.oc-form{grid-template-columns:1fr 1fr}}
+  @media (max-width:820px){.form-campo{grid-template-columns:1fr 1fr;} .form-campo .btn-add{grid-column:1/-1}}
+
+  .inp-alunos{width:64px;padding:6px 8px;border:1.5px solid var(--linha);border-radius:8px;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;color:var(--roxo-900);text-align:center;background:#FDFCFF;transition:border-color .12s}
+  .inp-alunos:focus{outline:none;border-color:var(--laranja-500);background:#fff}
+  .inp-alunos::-webkit-inner-spin-button{opacity:1}
+  .tot-alunos{font-size:11px;font-weight:700;color:var(--cinza-400);background:#F3F0FA;padding:3px 8px;border-radius:999px;white-space:nowrap}
+  .aviso-salvo{font-size:11.5px;color:var(--verde);font-weight:600;opacity:0;transition:opacity .2s;margin-left:10px}
+  .aviso-salvo.mostrar{opacity:1}
+
+  @media (max-width:720px){
+    body{padding:16px 10px 40px}
+    .g-label{width:130px}.g-meses{margin-left:130px}
+    .g-turma{width:auto}.g-status,.turno-mini{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){.hoje-pill::before{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>Cronograma de Estágios <span>·</span> Enfermagem</h1>
+      <div class="sub" id="subTitulo"></div>
+    </div>
+    <div class="hoje-pill" id="pillHoje"></div>
+  </header>
+
+  <nav class="abas" id="abas" aria-label="Selecionar painel"></nav>
+
+  <div id="vistaGeral" style="display:none">
+    <div id="avisoVazio"></div>
+    <div class="cards" id="cardsGeral"></div>
+
+    <section class="painel">
+      <h2>Vagas de campo necessárias por mês — 3 unidades</h2>
+      <div class="dica">Soma dos alunos das turmas em Estágio I ou II em cada mês. Passe o mouse na barra para ver o detalhamento por unidade e estágio.</div>
+      <div class="legenda">
+        <span><i class="chip e1"></i> Estágio I</span>
+        <span><i class="chip e2"></i> Estágio II</span>
+      </div>
+      <div class="gm-scroll"><div class="gm-wrap" id="graficoMeses"></div></div>
+    </section>
+
+    <section class="painel">
+      <h2>Detalhamento mensal por unidade</h2>
+      <div class="dica">Vagas necessárias em cada mês, por unidade. O mês de pico aparece destacado em laranja.</div>
+      <table style="min-width:720px">
+        <thead>
+          <tr><th>Mês</th><th>Belo Horizonte</th><th>Contagem</th><th>Venda Nova</th><th>Estágio I</th><th>Estágio II</th><th>Total de vagas</th></tr>
+        </thead>
+        <tbody id="tabelaMeses"></tbody>
+      </table>
+      <div class="nota">Uma turma conta vagas em todos os meses que o período de estágio toca, mesmo que parcialmente. Os números vêm dos alunos preenchidos nas abas de cada unidade.</div>
+    </section>
+  </div>
+
+  <div id="vistaCampos" style="display:none">
+    <div class="cards" id="cardsCampos"></div>
+
+    <section class="painel">
+      <h2>Cadastrar campo de estágio</h2>
+      <div class="dica">Informe o nome do campo, a unidade atendida e as vagas disponíveis em cada período. Os campos ficam salvos neste navegador.</div>
+      <div class="form-campo" style="grid-template-columns:2fr 1.2fr 1.1fr repeat(3,86px) auto">
+        <label>Nome do campo<input type="text" id="fcNome" placeholder="Ex.: Hospital Estadual de Diadema" maxlength="80"></label>
+        <label>Unidade<select id="fcUnidade"><option value="bh">Belo Horizonte</option><option value="contagem">Contagem</option><option value="vendanova">Venda Nova</option><option value="todas">Todas as unidades</option></select></label>
+        <label>Tipo de vaga<span class="seg-regime" id="fcRegime"><button type="button" data-r="diaria" class="on">Diária</button><button type="button" data-r="3x2">3x2</button></span></label>
+        <label>Manhã<input type="number" id="fcM" min="0" max="999" placeholder="0"></label>
+        <label>Tarde<input type="number" id="fcT" min="0" max="999" placeholder="0"></label>
+        <label>Noite<input type="number" id="fcN" min="0" max="999" placeholder="0"></label>
+        <button class="btn-add" id="fcAdd">+ Adicionar campo</button>
+      </div>
+      <table style="min-width:820px">
+        <thead>
+          <tr><th>Campo</th><th>Unidade</th><th>Tipo de vaga</th><th>Manhã</th><th>Tarde</th><th>Noite</th><th>Total</th><th>Ocupadas hoje</th><th></th></tr>
+        </thead>
+        <tbody id="tbodyCampos"></tbody>
+        <tfoot id="tfootCampos"></tfoot>
+      </table>
+      <div class="nota">As vagas por período podem ser editadas direto na tabela, e o botão de tipo alterna entre <b>Diária</b> e <b>3x2</b> com um clique — o total e o comparativo com a demanda se atualizam sozinhos.</div>
+    </section>
+  </div>
+
+  <div id="vistaUnidade">
+
+  <div class="cards" id="cards"></div>
+
+  <section class="painel">
+    <h2 id="tituloGantt">Linha do tempo das turmas</h2>
+    <div class="dica">Passe o mouse sobre as barras e marcadores para ver as datas exatas. A linha laranja marca o dia de hoje.</div>
+    <div class="legenda">
+      <span><i class="chip e1"></i> Estágio I</span>
+      <span><i class="chip e2"></i> Estágio II</span>
+      <span><i class="marc-cmm"></i> Final do CMM</span>
+      <span><i class="marc-fim"></i> Data de término</span>
+      <span><i class="chip recesso"></i> Recesso (22/12–05/01)</span>
+      <span><i class="linha-hoje-leg"></i> Hoje</span>
+    </div>
+    <div class="gantt" id="gantt"></div>
+  </section>
+
+  <section class="painel">
+    <h2>Tabela detalhada por turno <span class="aviso-salvo" id="avisoSalvo">✓ salvo</span></h2>
+    <div class="dica">Cada turma possui 3 turnos com as mesmas datas. Digite o nº de alunos em cada turno — o valor fica salvo no navegador. Turmas com <span style="color:var(--laranja-500)">●</span> estão com estágio em andamento hoje.</div>
+    <div class="filtros" id="filtros">
+      <button class="on" data-f="todos">Todos os turnos</button>
+      <button data-f="M">Manhã</button>
+      <button data-f="T">Tarde</button>
+      <button data-f="N">Noite</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Turma</th><th>Turno</th><th>Alunos</th><th>Situação hoje</th><th>Data de término</th><th>Final do CMM</th>
+          <th class="grp-e1">Início Estágio I</th><th class="grp-e1">Final Estágio I</th>
+          <th class="grp-e2">Início Estágio II</th><th class="grp-e2">Final Estágio II</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="nota">
+      Dias úteis descontam sábados, domingos, feriados de Belo Horizonte e o recesso de 22/12 a 05/01.
+      Pendências de revisão: <b>M252</b> — Estágio I termina 07/12 enquanto a 252 (mesmo início) termina 09/12 (critérios de contagem diferentes);
+      <b>253/M253</b> — Estágio I usa o critério de contagem incluindo o dia inicial.
+    </div>
+  </section>
+  </div><!-- /vistaUnidade -->
+
+</div>
+<div class="tooltip" id="tip"></div>
+
+<script>
+// ============================================================
+// DADOS — cada unidade tem sua própria lista de turmas.
+// Hoje as três são iguais; para diferenciar, basta editar
+// as datas dentro da unidade desejada.
+// ============================================================
+const TURMAS_BASE=[
+ {id:"251", termino:"2027-01-30", cmm:"2026-12-21", e1i:"2026-04-27", e1f:"2026-08-05", e2i:"2026-10-26", e2f:"2027-01-30"},
+ {id:"M251",termino:"2027-02-27", cmm:"2027-03-05", e1i:"2026-04-27", e1f:"2026-08-05", e2i:"2026-11-23", e2f:"2027-02-26"},
+ {id:"252", termino:"2027-03-30", cmm:"2027-04-12", e1i:"2026-08-24", e1f:"2026-12-09", e2i:"2027-01-06", e2f:"2027-03-30"},
+ {id:"M252",termino:"2027-05-30", cmm:"2027-05-26", e1i:"2026-08-24", e1f:"2026-12-07", e2i:"2027-01-06", e2f:"2027-03-30"},
+ {id:"253", termino:"2027-06-30", cmm:"2027-07-07", e1i:"2026-10-13", e1f:"2027-02-17", e2i:"2027-04-09", e2f:"2027-06-30"},
+ {id:"M253",termino:"2027-08-30", cmm:"2027-09-01", e1i:"2026-10-13", e1f:"2027-02-17", e2i:"2027-04-09", e2f:"2027-06-30"},
+ {id:"254", termino:"2027-09-30", cmm:"2027-10-07", e1i:"2027-02-15", e1f:"2027-06-02", e2i:"2027-07-13", e2f:"2027-09-30"},
+ {id:"M254",termino:"2027-11-30", cmm:"2027-11-16", e1i:"2027-02-15", e1f:"2027-06-02", e2i:"2027-07-13", e2f:"2027-09-30"},
+ {id:"261", termino:"2028-01-30", cmm:"2027-12-20", e1i:"2027-04-26", e1f:"2027-08-05", e2i:"2027-10-25", e2f:"2028-01-30"},
+ {id:"M261",termino:"2028-04-17", cmm:"2028-03-06", e1i:"2027-06-07", e1f:"2027-09-16", e2i:"2027-11-29", e2f:"2028-03-06"},
+ {id:"262", termino:"2028-04-30", cmm:"2028-04-17", e1i:"2027-08-02", e1f:"2027-11-16", e2i:"2028-01-25", e2f:"2028-04-17"}
+];
+const clonar=a=>JSON.parse(JSON.stringify(a));
+const UNIDADES=[
+ {chave:"bh",       nome:"Belo Horizonte", turmas:clonar(TURMAS_BASE)},
+ {chave:"contagem", nome:"Contagem",       turmas:clonar(TURMAS_BASE)},
+ {chave:"vendanova",nome:"Venda Nova",     turmas:clonar(TURMAS_BASE)}
+];
+
+// ============================================================
+const D=s=>{const[a,m,d]=s.split("-").map(Number);return new Date(a,m-1,d)};
+const fmt=d=>d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"});
+const fmtL=d=>d.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+const hoje=new Date();hoje.setHours(0,0,0,0);
+const ini=new Date(2026,0,1), fim=new Date(2028,5,1);
+const total=fim-ini;
+const pos=d=>((d-ini)/total*100);
+const nomes=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const recessos=[["2026-12-22","2027-01-06"],["2027-12-22","2028-01-06"]];
+const TURNOS=[["M","Manhã"],["T","Tarde"],["N","Noite"]];
+
+// ---- nº de alunos por unidade/turma/turno (salvo no navegador) ----
+const CHAVE_ALUNOS="proz_alunos_estagio_v1";
+let alunos={};
+try{alunos=JSON.parse(localStorage.getItem(CHAVE_ALUNOS))||{}}catch(e){alunos={}}
+function getAlunos(uni,turma,turno){return (alunos[uni]&&alunos[uni][turma]&&alunos[uni][turma][turno])||0}
+function setAlunos(uni,turma,turno,v){
+  alunos[uni]=alunos[uni]||{};alunos[uni][turma]=alunos[uni][turma]||{};
+  alunos[uni][turma][turno]=Math.max(0,parseInt(v)||0);
+  try{localStorage.setItem(CHAVE_ALUNOS,JSON.stringify(alunos))}catch(e){}
+  const av=document.getElementById("avisoSalvo");
+  av.classList.add("mostrar");clearTimeout(av._t);av._t=setTimeout(()=>av.classList.remove("mostrar"),1500);
+}
+function totalTurma(uni,turma){return TURNOS.reduce((s,[sig])=>s+getAlunos(uni,turma,sig),0)}
+
+document.getElementById("pillHoje").textContent="Hoje: "+fmtL(hoje);
+
+const meses=[];let c=new Date(ini);
+while(c<fim){const p=new Date(c.getFullYear(),c.getMonth()+1,1);
+  meses.push({d:new Date(c),w:(Math.min(p,fim)-c)/total*100});c=p}
+
+function status(t){
+  const e1i=D(t.e1i),e1f=D(t.e1f),e2i=D(t.e2i),e2f=D(t.e2f);
+  if(hoje<e1i)return{cls:"st-aguarda",txt:"Antes do Estágio I"};
+  if(hoje<=e1f)return{cls:"st-e1",txt:"Estágio I",ativa:true};
+  if(hoje<e2i)return{cls:"st-intervalo",txt:"Entre estágios"};
+  if(hoje<=e2f)return{cls:"st-e2",txt:"Estágio II",ativa:true};
+  return{cls:"st-concluida",txt:"Concluído"};
+}
+
+// ---- abas: Visão Geral + unidades + campos ----
+let unidadeAtual=0;
+const abas=document.getElementById("abas");
+abas.innerHTML=`<button data-i="geral" class="on">Visão Geral</button>`+
+  UNIDADES.map((u,i)=>`<button data-i="${i}">${u.nome}</button>`).join("")+
+  `<button data-i="campos">Campos de Estágio</button>`;
+function mostrarVista(qual){
+  document.getElementById("vistaGeral").style.display=qual==="geral"?"":"none";
+  document.getElementById("vistaCampos").style.display=qual==="campos"?"":"none";
+  document.getElementById("vistaUnidade").style.display=qual==="unidade"?"":"none";
+}
+abas.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  abas.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  if(b.dataset.i==="geral"){mostrarVista("geral");renderGeral();}
+  else if(b.dataset.i==="campos"){mostrarVista("campos");renderCampos();}
+  else{unidadeAtual=+b.dataset.i;mostrarVista("unidade");render();}
+});
+
+// ---- render principal ----
+function render(){
+  const u=UNIDADES[unidadeAtual];
+  const turmas=u.turmas;
+
+  document.getElementById("subTitulo").textContent=
+    `Unidade ${u.nome} · Turmas 251 a 262 · 3 turnos por turma (manhã, tarde e noite) · Estágio I (72 dias úteis) e Estágio II (56 dias úteis) · Calendário de Belo Horizonte, recesso 22/12 a 05/01`;
+  document.getElementById("tituloGantt").textContent=`Linha do tempo das turmas — ${u.nome}`;
+
+  // cards
+  const st=turmas.map(t=>({t,s:status(t)}));
+  const emE1=st.filter(x=>x.s.txt==="Estágio I").length;
+  const emE2=st.filter(x=>x.s.txt==="Estágio II").length;
+  const prox=st.filter(x=>D(x.t.e1i)>hoje||D(x.t.e2i)>hoje)
+    .map(x=>{const c=[D(x.t.e1i),D(x.t.e2i)].filter(d=>d>hoje);return{id:x.t.id,d:new Date(Math.min(...c))}})
+    .sort((a,b)=>a.d-b.d)[0];
+  const concl=st.filter(x=>x.s.txt==="Concluído").length;
+  const totAlunos=turmas.reduce((s,t)=>s+totalTurma(u.chave,t.id),0);
+  const alunosEmCampo=st.filter(x=>x.s.ativa).reduce((s,x)=>s+totalTurma(u.chave,x.t.id),0);
+  document.getElementById("cards").innerHTML=`
+    <div class="card destaque"><div class="num">${emE1}</div><div class="lbl">turmas em Estágio I · ${emE1*3} turnos</div></div>
+    <div class="card destaque"><div class="num">${emE2}</div><div class="lbl">turmas em Estágio II · ${emE2*3} turnos</div></div>
+    <div class="card destaque"><div class="num">${alunosEmCampo}</div><div class="lbl">alunos em estágio hoje</div></div>
+    <div class="card"><div class="num">${totAlunos}</div><div class="lbl">alunos na unidade</div></div>
+    <div class="card"><div class="num">${prox?prox.id:"—"}</div><div class="lbl">próximo início${prox?" · "+fmt(prox.d):""}</div></div>
+    <div class="card"><div class="num">${concl}/${turmas.length}</div><div class="lbl">ciclos concluídos</div></div>`;
+
+  // gantt
+  let html=`<div class="g-meses">${meses.map(m=>{
+    const label=m.d.getMonth()===0?`<span class="ano">${m.d.getFullYear()}</span>`:nomes[m.d.getMonth()];
+    return`<div class="g-mes ${m.d.getMonth()===0?"ano":""}" style="width:${m.w}%">${label}</div>`}).join("")}</div>
+  <div class="g-body">`;
+  turmas.forEach(t=>{
+    const s=status(t);
+    html+=`<div class="g-row">
+      <div class="g-label"><span class="g-turma">${t.id}</span><span class="tot-alunos" title="Total de alunos (soma dos 3 turnos)">${totalTurma(u.chave,t.id)} al.</span><span class="g-status ${s.cls}">${s.txt}</span></div>
+      <div class="g-track">
+        <div class="g-grid">${meses.map(m=>`<i style="width:${m.w}%"></i>`).join("")}</div>
+        ${recessos.map(r=>{const a=pos(D(r[0])),b=pos(D(r[1]));return`<div class="banda-recesso" style="left:${a}%;width:${b-a}%"></div>`}).join("")}
+        <div class="barra e1" style="left:${pos(D(t.e1i))}%;width:${pos(D(t.e1f))-pos(D(t.e1i))}%"
+          data-tip="<b>${t.id} · Estágio I</b><br>${fmt(D(t.e1i))} → ${fmt(D(t.e1f))}<br>72 dias úteis"></div>
+        <div class="barra e2" style="left:${pos(D(t.e2i))}%;width:${pos(D(t.e2f))-pos(D(t.e2i))}%"
+          data-tip="<b>${t.id} · Estágio II</b><br>${fmt(D(t.e2i))} → ${fmt(D(t.e2f))}<br>56 dias úteis"></div>
+        <div class="marc cmm" style="left:${pos(D(t.cmm))}%" data-tip="<b>${t.id} · Final do CMM</b><br>${fmt(D(t.cmm))}"></div>
+        <div class="marc fim" style="left:${pos(D(t.termino))}%" data-tip="<b>${t.id} · Data de término</b><br>${fmt(D(t.termino))}"></div>
+      </div>
+    </div>`;
+  });
+  html+=`<div class="linha-hoje" style="left:calc(210px + (100% - 210px) * ${pos(hoje)/100})"></div></div>`;
+  document.getElementById("gantt").innerHTML=html;
+
+  // tabela por turno
+  document.getElementById("tbody").innerHTML=turmas.map(t=>{
+    const s=status(t);
+    return TURNOS.map(([sig,nome])=>`<tr class="${s.ativa?"ativa":""}" data-turno="${sig}">
+      <td class="turma">${t.id}</td>
+      <td><span class="badge-turno ${sig}">${nome}</span></td>
+      <td><input type="number" class="inp-alunos" min="0" max="999" value="${getAlunos(u.chave,t.id,sig)||""}" placeholder="0" data-turma="${t.id}" data-tur="${sig}" aria-label="Alunos ${t.id} ${nome}"></td>
+      <td><span class="g-status ${s.cls}">${s.txt}</span></td>
+      <td>${fmt(D(t.termino))}</td><td>${fmt(D(t.cmm))}</td>
+      <td class="e1">${fmt(D(t.e1i))}</td><td class="e1">${fmt(D(t.e1f))}</td>
+      <td class="e2">${fmt(D(t.e2i))}</td><td class="e2">${fmt(D(t.e2f))}</td>
+    </tr>`).join("")}).join("");
+  document.querySelectorAll(".inp-alunos").forEach(inp=>{
+    inp.addEventListener("change",()=>{
+      setAlunos(u.chave,inp.dataset.turma,inp.dataset.tur,inp.value);
+      atualizarResumos();
+    });
+  });
+  aplicarFiltroTurno();
+  ligarTooltips();
+}
+
+// atualiza cards e totais do gantt sem redesenhar a tabela (não perde o foco dos inputs)
+function atualizarResumos(){
+  const u=UNIDADES[unidadeAtual];
+  const st=u.turmas.map(t=>({t,s:status(t)}));
+  const totAlunos=u.turmas.reduce((s,t)=>s+totalTurma(u.chave,t.id),0);
+  const alunosEmCampo=st.filter(x=>x.s.ativa).reduce((s,x)=>s+totalTurma(u.chave,x.t.id),0);
+  const nums=document.querySelectorAll("#cards .card .num");
+  if(nums[2])nums[2].textContent=alunosEmCampo;
+  if(nums[3])nums[3].textContent=totAlunos;
+  document.querySelectorAll(".g-row").forEach((row,i)=>{
+    const tot=row.querySelector(".tot-alunos");
+    if(tot&&u.turmas[i])tot.textContent=totalTurma(u.chave,u.turmas[i].id)+" al.";
+  });
+}
+
+// ---- Visão Geral: vagas necessárias por mês ----
+function vagasNoMes(u,mIni,mFim){
+  let e1=0,e2=0;
+  u.turmas.forEach(t=>{
+    const n=totalTurma(u.chave,t.id);
+    if(D(t.e1i)<=mFim&&D(t.e1f)>=mIni)e1+=n;
+    if(D(t.e2i)<=mFim&&D(t.e2f)>=mIni)e2+=n;
+  });
+  return{e1,e2};
+}
+
+function renderGeral(){
+  document.getElementById("subTitulo").textContent=
+    `Visão consolidada das 3 unidades · Vagas de campo necessárias por mês, calculadas a partir dos alunos preenchidos em cada unidade`;
+
+  // série mensal
+  const serie=meses.map(m=>{
+    const mIni=new Date(m.d.getFullYear(),m.d.getMonth(),1);
+    const mFim=new Date(m.d.getFullYear(),m.d.getMonth()+1,0);
+    const porUni=UNIDADES.map(u=>vagasNoMes(u,mIni,mFim));
+    const e1=porUni.reduce((s,x)=>s+x.e1,0), e2=porUni.reduce((s,x)=>s+x.e2,0);
+    return{d:m.d,porUni,e1,e2,total:e1+e2};
+  });
+  const max=Math.max(1,...serie.map(s=>s.total));
+  const pico=serie.reduce((a,b)=>b.total>a.total?b:a,serie[0]);
+  const mesNome=d=>nomes[d.getMonth()]+"/"+String(d.getFullYear()).slice(2);
+  const mesLongo=d=>d.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+
+  // aviso se nenhum aluno foi preenchido
+  const totalGeralAlunos=UNIDADES.reduce((s,u)=>s+u.turmas.reduce((a,t)=>a+totalTurma(u.chave,t.id),0),0);
+  document.getElementById("avisoVazio").innerHTML=totalGeralAlunos===0
+    ?`<div class="aviso-vazio"><b>Nenhum aluno cadastrado ainda.</b> Entre nas abas de cada unidade e preencha o número de alunos por turma e turno — este painel calcula as vagas automaticamente a partir desses valores.</div>`:"";
+
+  // cards
+  const agora=new Date(hoje.getFullYear(),hoje.getMonth(),1);
+  const mesAtual=serie.find(s=>s.d.getFullYear()===agora.getFullYear()&&s.d.getMonth()===agora.getMonth());
+  const proxSerie=serie.filter(s=>s.d>agora&&s.total>0)[0];
+  document.getElementById("cardsGeral").innerHTML=`
+    <div class="card destaque"><div class="num">${mesAtual?mesAtual.total:0}</div><div class="lbl">vagas neste mês (${mesNome(hoje)})</div></div>
+    <div class="card destaque"><div class="num">${pico.total}</div><div class="lbl">pico de demanda · ${mesLongo(pico.d)}</div></div>
+    <div class="card"><div class="num">${proxSerie?proxSerie.total:"—"}</div><div class="lbl">${proxSerie?"vagas em "+mesNome(proxSerie.d):"sem demanda futura"}</div></div>
+    <div class="card"><div class="num">${totalGeralAlunos}</div><div class="lbl">alunos cadastrados · 3 unidades</div></div>`;
+
+  // gráfico de barras empilhadas
+  document.getElementById("graficoMeses").innerHTML=serie.map(s=>{
+    const h1=s.e1/max*170, h2=s.e2/max*170;
+    const detalhe=UNIDADES.map((u,i)=>`${u.nome}: ${s.porUni[i].e1+s.porUni[i].e2}`).join("<br>");
+    return`<div class="gm-col ${s===pico&&s.total>0?"pico":""}">
+      <div class="gm-val">${s.total||""}</div>
+      <div class="gm-bar" data-tip="<b>${mesLongo(s.d)}</b><br>Estágio I: ${s.e1} · Estágio II: ${s.e2}<br>${detalhe}">
+        <div class="gm-seg-e2" style="height:${h2}px"></div>
+        <div class="gm-seg-e1" style="height:${h1}px"></div>
+      </div>
+      <div class="gm-mes ${s.d.getMonth()===0?"ano":""}"><span>${mesNome(s.d)}</span></div>
+    </div>`}).join("");
+
+  // tabela mensal
+  document.getElementById("tabelaMeses").innerHTML=serie.filter(s=>s.total>0).map(s=>{
+    const tots=s.porUni.map(x=>x.e1+x.e2);
+    return`<tr>
+      <td class="turma">${mesLongo(s.d)}</td>
+      <td>${tots[0]}</td><td>${tots[1]}</td><td>${tots[2]}</td>
+      <td class="e1">${s.e1}</td><td class="e2">${s.e2}</td>
+      <td class="${s===pico?"pico":""}"><b>${s.total}</b></td>
+    </tr>`}).join("")||`<tr><td colspan="7" style="color:var(--cinza-400)">Preencha os alunos nas abas das unidades para ver a demanda mensal.</td></tr>`;
+
+  ligarTooltips();
+}
+
+// ---- Campos de estágio (persistência local) ----
+const CHAVE_CAMPOS="proz_campos_estagio_v1";
+let campos;
+try{campos=JSON.parse(localStorage.getItem(CHAVE_CAMPOS))||[]}catch(e){campos=[]}
+function salvarCampos(){try{localStorage.setItem(CHAVE_CAMPOS,JSON.stringify(campos))}catch(e){}}
+const detalhesAbertos=new Set();
+function ocupadasHoje(c){
+  return (c.ocupacoes||[]).reduce((s,o)=>{
+    const de=D(o.de),ate=D(o.ate);
+    return s+((hoje>=de&&hoje<=ate)?(o.v||0):0);
+  },0);
+}
+const NOME_UNI={bh:"Belo Horizonte",contagem:"Contagem",vendanova:"Venda Nova",todas:"Todas"};
+
+function picoDemanda(){ // maior demanda mensal total (3 unidades)
+  let pico={total:0,d:null};
+  meses.forEach(m=>{
+    const mIni=new Date(m.d.getFullYear(),m.d.getMonth(),1);
+    const mFim=new Date(m.d.getFullYear(),m.d.getMonth()+1,0);
+    const tot=UNIDADES.reduce((s,u)=>{const v=vagasNoMes(u,mIni,mFim);return s+v.e1+v.e2},0);
+    if(tot>pico.total)pico={total:tot,d:m.d};
+  });
+  return pico;
+}
+
+function renderCampos(){
+  document.getElementById("subTitulo").textContent=
+    `Campos de estágio cadastrados · Capacidade de vagas por período comparada à demanda das turmas`;
+
+  campos.forEach(c=>{if(!c.regime)c.regime="diaria"});
+  const somaM=campos.reduce((s,c)=>s+(c.M||0),0);
+  const somaT=campos.reduce((s,c)=>s+(c.T||0),0);
+  const somaN=campos.reduce((s,c)=>s+(c.N||0),0);
+  const capTotal=somaM+somaT+somaN;
+  const totDiaria=campos.filter(c=>c.regime==="diaria").reduce((s,c)=>s+(c.M||0)+(c.T||0)+(c.N||0),0);
+  const tot3x2=campos.filter(c=>c.regime==="3x2").reduce((s,c)=>s+(c.M||0)+(c.T||0)+(c.N||0),0);
+  const pico=picoDemanda();
+  const saldo=capTotal-pico.total;
+  const ocupTotal=campos.reduce((s,c)=>s+ocupadasHoje(c),0);
+  const livresHoje=Math.max(0,capTotal-ocupTotal);
+  const mesLongo=d=>d?d.toLocaleDateString("pt-BR",{month:"long",year:"numeric"}):"—";
+
+  document.getElementById("cardsCampos").innerHTML=`
+    <div class="card destaque"><div class="num">${campos.length}</div><div class="lbl">campos cadastrados</div></div>
+    <div class="card"><div class="num">${capTotal}</div><div class="lbl">vagas totais · M ${somaM} / T ${somaT} / N ${somaN}</div></div>
+    <div class="card"><div class="num">${totDiaria}</div><div class="lbl">vagas diárias</div></div>
+    <div class="card"><div class="num">${tot3x2}</div><div class="lbl">vagas 3x2</div></div>
+    <div class="card destaque"><div class="num">${ocupTotal}</div><div class="lbl">vagas ocupadas hoje</div></div>
+    <div class="card"><div class="num ${livresHoje>0?"saldo-pos":""}">${livresHoje}</div><div class="lbl">vagas livres hoje</div></div>
+    <div class="card"><div class="num">${pico.total}</div><div class="lbl">pico de demanda · ${mesLongo(pico.d)}</div></div>
+    <div class="card destaque"><div class="num ${saldo>=0?"saldo-pos":"saldo-neg"}">${saldo>=0?"+":""}${saldo}</div><div class="lbl">saldo de vagas no pico</div></div>`;
+
+  document.getElementById("tbodyCampos").innerHTML=campos.length?campos.map((c,i)=>{
+    const cap=(c.M||0)+(c.T||0)+(c.N||0);
+    const ocup=ocupadasHoje(c);
+    return`<tr>
+    <td class="turma">${c.nome}</td>
+    <td>${NOME_UNI[c.unidade]||c.unidade}</td>
+    <td><button class="btn-regime ${c.regime==="3x2"?"r3x2":"diaria"}" data-reg="${i}" title="Clique para alternar entre Diária e 3x2">${c.regime==="3x2"?"3x2":"Diária"}</button></td>
+    <td><input type="number" class="inp-alunos inp-campo" min="0" max="999" value="${c.M||""}" placeholder="0" data-i="${i}" data-p="M"></td>
+    <td><input type="number" class="inp-alunos inp-campo" min="0" max="999" value="${c.T||""}" placeholder="0" data-i="${i}" data-p="T"></td>
+    <td><input type="number" class="inp-alunos inp-campo" min="0" max="999" value="${c.N||""}" placeholder="0" data-i="${i}" data-p="N"></td>
+    <td><b>${cap}</b></td>
+    <td class="oc-num ${ocup>cap?"saldo-neg":""}">${ocup} <span class="livres">/ ${Math.max(0,cap-ocup)} livres</span></td>
+    <td style="white-space:nowrap"><button class="btn-detalhes ${detalhesAbertos.has(i)?"aberto":""}" data-det="${i}">Detalhes</button><button class="btn-remover" data-rm="${i}">Remover</button></td>
+  </tr>
+  <tr class="tr-detalhes" data-detrow="${i}" style="display:${detalhesAbertos.has(i)?"":"none"}">
+    <td colspan="9">
+      <div class="det-grid">
+        <label>Documentos necessários<textarea class="inp-det" data-i="${i}" data-c="docs" placeholder="Ex.: carteira de vacinação, RG, termo de compromisso assinado...">${c.docs||""}</textarea></label>
+        <label>Horário de estágio<input type="text" class="inp-det" data-i="${i}" data-c="horario" placeholder="Ex.: 7h às 12h (manhã) / 13h às 18h (tarde)" value="${(c.horario||"").replace(/"/g,"&quot;")}"></label>
+        <label>Contato do responsável<input type="text" class="inp-det" data-i="${i}" data-c="contato" placeholder="Ex.: Enf. Maria Silva — (31) 99999-0000" value="${(c.contato||"").replace(/"/g,"&quot;")}"></label>
+      </div>
+      <div class="oc-titulo">Vagas ocupadas neste campo</div>
+      <div class="oc-form" style="grid-template-columns:80px 110px 1.1fr 110px 1fr 1fr auto">
+        <label>Vagas<input type="number" min="1" max="999" placeholder="0" data-ocv="${i}"></label>
+        <label>Período<select data-ocp="${i}"><option value="Todos">Todos</option><option value="Manhã">Manhã</option><option value="Tarde">Tarde</option><option value="Noite">Noite</option></select></label>
+        <label>Unidade ocupante<select data-ocu="${i}"><option value="Belo Horizonte">Belo Horizonte</option><option value="Contagem">Contagem</option><option value="Venda Nova">Venda Nova</option></select></label>
+        <label>Plantão<select data-ocpl="${i}"><option value="Diário">Diário</option><option value="Ímpar">Ímpar</option><option value="Par">Par</option></select></label>
+        <label>De<input type="date" data-ocde="${i}"></label>
+        <label>Até<input type="date" data-ocate="${i}"></label>
+        <button class="btn-oc" data-ocadd="${i}">+ Registrar ocupação</button>
+      </div>
+      ${(c.ocupacoes&&c.ocupacoes.length)?c.ocupacoes.map((o,j)=>{
+        const de=D(o.de),ate=D(o.ate);
+        const badge=hoje>ate?`<span class="badge-oc-fim">Encerrada</span>`:hoje<de?`<span class="badge-oc-fut">Futura</span>`:`<span class="badge-oc-ativa">Ativa</span>`;
+        const plantao=o.pl&&o.pl!=="Diário"?` · Plantão ${o.pl}`:"";
+        return`<div class="oc-item"><b>${o.v} vaga${o.v>1?"s":""}</b><span>· ${o.p}${plantao}</span>${o.u?`<span class="badge-oc-uni">${o.u}</span>`:""}<span>· ${fmt(de)} → ${fmt(ate)}</span>${badge}<button class="btn-remover" data-ocrm="${i}-${j}" style="margin-left:auto">Remover</button></div>`;
+      }).join(""):`<div class="oc-vazio">Nenhuma ocupação registrada — use o formulário acima para lançar a primeira.</div>`}
+    </td>
+  </tr>`}).join("")
+  :`<tr><td colspan="9" style="color:var(--cinza-400)">Nenhum campo cadastrado ainda — use o formulário acima para adicionar o primeiro.</td></tr>`;
+
+  document.getElementById("tfootCampos").innerHTML=campos.length?`<tr>
+    <td>Total</td><td>${campos.length} campo${campos.length>1?"s":""}</td>
+    <td>Diárias ${totDiaria} · 3x2 ${tot3x2}</td>
+    <td>${somaM}</td><td>${somaT}</td><td>${somaN}</td><td>${capTotal}</td><td>${ocupTotal} / ${livresHoje} livres</td><td></td></tr>`:"";
+
+  document.querySelectorAll(".inp-campo").forEach(inp=>{
+    inp.addEventListener("change",()=>{
+      campos[+inp.dataset.i][inp.dataset.p]=Math.max(0,parseInt(inp.value)||0);
+      salvarCampos();renderCampos();
+    });
+  });
+  document.querySelectorAll("[data-reg]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const c=campos[+btn.dataset.reg];
+      c.regime=c.regime==="3x2"?"diaria":"3x2";
+      salvarCampos();renderCampos();
+    });
+  });
+  document.querySelectorAll("[data-det]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const i=+btn.dataset.det;
+      detalhesAbertos.has(i)?detalhesAbertos.delete(i):detalhesAbertos.add(i);
+      const row=document.querySelector(`[data-detrow="${i}"]`);
+      if(row)row.style.display=detalhesAbertos.has(i)?"":"none";
+      btn.classList.toggle("aberto",detalhesAbertos.has(i));
+    });
+  });
+  document.querySelectorAll(".inp-det").forEach(inp=>{
+    inp.addEventListener("change",()=>{
+      campos[+inp.dataset.i][inp.dataset.c]=inp.value.trim();
+      salvarCampos(); // salva sem redesenhar, para não perder o foco
+    });
+  });
+  document.querySelectorAll("[data-ocadd]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const i=+btn.dataset.ocadd;
+      const v=Math.max(0,parseInt(document.querySelector(`[data-ocv="${i}"]`).value)||0);
+      const p=document.querySelector(`[data-ocp="${i}"]`).value;
+      const u=document.querySelector(`[data-ocu="${i}"]`).value;
+      const pl=document.querySelector(`[data-ocpl="${i}"]`).value;
+      const de=document.querySelector(`[data-ocde="${i}"]`).value;
+      const ate=document.querySelector(`[data-ocate="${i}"]`).value;
+      if(!v||!de||!ate){alert("Preencha o número de vagas e as duas datas.");return;}
+      if(D(ate)<D(de)){alert("A data final não pode ser anterior à inicial.");return;}
+      campos[i].ocupacoes=campos[i].ocupacoes||[];
+      campos[i].ocupacoes.push({v,p,u,pl,de,ate});
+      campos[i].ocupacoes.sort((a,b)=>D(a.de)-D(b.de));
+      salvarCampos();renderCampos();
+    });
+  });
+  document.querySelectorAll("[data-ocrm]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const[i,j]=btn.dataset.ocrm.split("-").map(Number);
+      campos[i].ocupacoes.splice(j,1);
+      salvarCampos();renderCampos();
+    });
+  });
+  document.querySelectorAll("[data-rm]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const c=campos[+btn.dataset.rm];
+      if(confirm(`Remover o campo "${c.nome}"?`)){campos.splice(+btn.dataset.rm,1);detalhesAbertos.clear();salvarCampos();renderCampos();}
+    });
+  });
+}
+
+let regimeNovo="diaria";
+document.getElementById("fcRegime").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  regimeNovo=b.dataset.r;
+  document.querySelectorAll("#fcRegime button").forEach(x=>x.classList.toggle("on",x===b));
+});
+document.getElementById("fcAdd").addEventListener("click",()=>{
+  const nome=document.getElementById("fcNome").value.trim();
+  if(!nome){document.getElementById("fcNome").focus();return;}
+  campos.push({
+    nome,
+    unidade:document.getElementById("fcUnidade").value,
+    regime:regimeNovo,
+    M:Math.max(0,parseInt(document.getElementById("fcM").value)||0),
+    T:Math.max(0,parseInt(document.getElementById("fcT").value)||0),
+    N:Math.max(0,parseInt(document.getElementById("fcN").value)||0)
+  });
+  salvarCampos();
+  ["fcNome","fcM","fcT","fcN"].forEach(id=>document.getElementById(id).value="");
+  renderCampos();
+});
+
+// ---- filtro de turno (persiste entre unidades) ----
+let filtroTurno="todos";
+document.getElementById("filtros").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  filtroTurno=b.dataset.f;
+  document.querySelectorAll("#filtros button").forEach(x=>x.classList.toggle("on",x===b));
+  aplicarFiltroTurno();
+});
+function aplicarFiltroTurno(){
+  document.querySelectorAll("#tbody tr").forEach(tr=>{
+    tr.style.display=(filtroTurno==="todos"||tr.dataset.turno===filtroTurno)?"":"none";
+  });
+}
+
+// ---- tooltips ----
+const tip=document.getElementById("tip");
+function ligarTooltips(){
+  document.querySelectorAll("[data-tip]").forEach(el=>{
+    el.addEventListener("mousemove",e=>{
+      tip.innerHTML=el.dataset.tip;tip.style.opacity=1;
+      tip.style.left=Math.min(e.clientX+14,window.innerWidth-270)+"px";
+      tip.style.top=(e.clientY+16)+"px";
+    });
+    el.addEventListener("mouseleave",()=>tip.style.opacity=0);
+  });
+}
+
+// inicia na Visão Geral; as abas de unidade renderizam ao serem abertas
+render();       // prepara a vista de unidade em segundo plano
+renderGeral();  // painel inicial
+</script>
+</body>
+</html>
