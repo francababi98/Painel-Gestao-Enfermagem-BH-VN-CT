@@ -183,6 +183,44 @@
   .aviso-salvo{font-size:11.5px;color:var(--verde);font-weight:600;opacity:0;transition:opacity .2s;margin-left:10px}
   .aviso-salvo.mostrar{opacity:1}
 
+  /* ---- cards de campos de estágio ---- */
+  .campos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:4px}
+  .campo-card{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;transition:box-shadow .15s}
+  .campo-card:hover{box-shadow:0 6px 20px rgba(36,16,70,.08)}
+  .campo-card.expandido{grid-column:1/-1}
+  .cc-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .cc-nome{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;color:var(--roxo-900);line-height:1.25}
+  .cc-uni{font-size:10.5px;font-weight:700;background:var(--roxo-100);color:var(--roxo-700);padding:3px 10px;border-radius:999px;white-space:nowrap;flex:none}
+  .cc-vagas{display:flex;gap:8px}
+  .cc-vaga{flex:1;background:var(--fundo);border-radius:10px;padding:8px 4px;text-align:center}
+  .cc-vaga .vv{font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:var(--roxo-700)}
+  .cc-vaga .ll{font-size:9.5px;font-weight:700;color:var(--cinza-400);text-transform:uppercase;letter-spacing:.05em}
+  .cc-total{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding-top:10px;border-top:1px solid var(--linha)}
+  .cc-total b{font-family:'Sora',sans-serif;font-size:16px;color:var(--roxo-900)}
+  .cc-ocup{font-size:12px;color:var(--cinza-700)}
+  .cc-ocup .neg{color:#B3261E;font-weight:700}
+  .cc-acoes{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+  .cc-acoes button{flex:1;min-width:74px}
+  .btn-editar{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#fff;background:var(--roxo-700);border:none;border-radius:8px;padding:7px 12px;cursor:pointer;transition:all .12s}
+  .btn-editar:hover{background:var(--roxo-900)}
+  .cc-edit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .cc-edit label{display:flex;flex-direction:column;gap:4px;font-size:10.5px;font-weight:700;color:var(--cinza-400);text-transform:uppercase;letter-spacing:.04em}
+  .cc-edit label.wide{grid-column:1/-1}
+  .cc-edit input,.cc-edit select{font-family:'Inter',sans-serif;font-size:13px;color:var(--roxo-900);padding:8px 10px;border:1.5px solid var(--linha);border-radius:8px;background:#FDFCFF}
+  .cc-edit input:focus,.cc-edit select:focus{outline:none;border-color:var(--laranja-500);background:#fff}
+  .cc-detalhe{border-top:1px solid var(--roxo-100);padding-top:14px;margin-top:2px}
+
+  /* ---- editor de datas do CMM (discreto, no rodapé) ---- */
+  .painel-cmm{background:#FBFAFE}
+  .btn-cmm-toggle{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--cinza-400);background:none;border:1.5px dashed var(--linha);border-radius:10px;padding:10px 18px;cursor:pointer;transition:all .12s}
+  .btn-cmm-toggle:hover{color:var(--roxo-700);border-color:var(--roxo-500)}
+  .btn-cmm-toggle.aberto{color:#fff;background:var(--roxo-900);border-style:solid;border-color:var(--roxo-900)}
+  .cmm-editor{margin-top:16px}
+  .cmm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+  .cmm-grid label{display:flex;flex-direction:column;gap:5px;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--roxo-900)}
+  .cmm-grid input{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--roxo-900);padding:8px 10px;border:1.5px solid var(--linha);border-radius:8px;background:#fff}
+  .cmm-grid input:focus{outline:none;border-color:var(--laranja-500)}
+
   @media (max-width:720px){
     body{padding:16px 10px 40px}
     .g-label{width:130px}.g-meses{margin-left:130px}
@@ -198,6 +236,7 @@
     <div>
       <h1>Cronograma de Estágios <span>·</span> Enfermagem</h1>
       <div class="sub" id="subTitulo"></div>
+      <div class="sub" id="statusCarregamento" style="color:var(--laranja-600);font-weight:600"></div>
     </div>
     <div class="hoje-pill" id="pillHoje"></div>
   </header>
@@ -236,7 +275,7 @@
 
     <section class="painel">
       <h2>Cadastrar campo de estágio</h2>
-      <div class="dica">Informe o nome do campo, a unidade atendida e as vagas disponíveis em cada período. Os campos ficam salvos neste navegador.</div>
+      <div class="dica">Informe o nome do campo, a unidade atendida e as vagas disponíveis em cada período. Os campos ficam salvos no banco de dados e são compartilhados entre todos os computadores.</div>
       <div class="form-campo" style="grid-template-columns:2fr 1.2fr 1.1fr repeat(3,86px) auto">
         <label>Nome do campo<input type="text" id="fcNome" placeholder="Ex.: Hospital Estadual de Diadema" maxlength="80"></label>
         <label>Unidade<select id="fcUnidade"><option value="bh">Belo Horizonte</option><option value="contagem">Contagem</option><option value="vendanova">Venda Nova</option><option value="todas">Todas as unidades</option></select></label>
@@ -246,14 +285,8 @@
         <label>Noite<input type="number" id="fcN" min="0" max="999" placeholder="0"></label>
         <button class="btn-add" id="fcAdd">+ Adicionar campo</button>
       </div>
-      <table style="min-width:820px">
-        <thead>
-          <tr><th>Campo</th><th>Unidade</th><th>Tipo de vaga</th><th>Manhã</th><th>Tarde</th><th>Noite</th><th>Total</th><th>Ocupadas hoje</th><th></th></tr>
-        </thead>
-        <tbody id="tbodyCampos"></tbody>
-        <tfoot id="tfootCampos"></tfoot>
-      </table>
-      <div class="nota">As vagas por período podem ser editadas direto na tabela, e o botão de tipo alterna entre <b>Diária</b> e <b>3x2</b> com um clique — o total e o comparativo com a demanda se atualizam sozinhos.</div>
+      <div class="campos-grid" id="gridCampos"></div>
+      <div class="nota">Cada campo aparece como um card. Clique em <b>Editar</b> para alterar nome, unidade, tipo de vaga ou o número de vagas por período; em <b>Detalhes</b> para documentos, horário, contato e ocupações. Os totais no topo se atualizam sozinhos.</div>
     </section>
   </div>
 
@@ -277,7 +310,7 @@
 
   <section class="painel">
     <h2>Tabela detalhada por turno <span class="aviso-salvo" id="avisoSalvo">✓ salvo</span></h2>
-    <div class="dica">Cada turma possui 3 turnos com as mesmas datas. Digite o nº de alunos em cada turno — o valor fica salvo no navegador. Turmas com <span style="color:var(--laranja-500)">●</span> estão com estágio em andamento hoje.</div>
+    <div class="dica">Cada turma possui 3 turnos com as mesmas datas. Digite o nº de alunos em cada turno — o valor fica salvo no banco de dados e é compartilhado entre todos os computadores. Turmas com <span style="color:var(--laranja-500)">●</span> estão com estágio em andamento hoje.</div>
     <div class="filtros" id="filtros">
       <button class="on" data-f="todos">Todos os turnos</button>
       <button data-f="M">Manhã</button>
@@ -295,16 +328,28 @@
       <tbody id="tbody"></tbody>
     </table>
     <div class="nota">
-      Dias úteis descontam sábados, domingos, feriados de Belo Horizonte e o recesso de 22/12 a 05/01.
-      Pendências de revisão: <b>M252</b> — Estágio I termina 07/12 enquanto a 252 (mesmo início) termina 09/12 (critérios de contagem diferentes);
-      <b>253/M253</b> — Estágio I usa o critério de contagem incluindo o dia inicial.
+      Dias úteis descontam sábados, domingos, feriados de Belo Horizonte e o recesso de 22/12 a 05/01, e a contagem inclui o dia inicial do estágio.
+      Cada turma regular e sua turma <b>M</b> compartilham as mesmas datas de Estágio I (exceto os pares 251 e 261, que têm cronograma próprio):
+      a <b>252</b> foi alinhada à <b>M252</b> — Estágio I de 24/08/2026 a 07/12/2026.
+    </div>
+  </section>
+
+  <section class="painel painel-cmm">
+    <button type="button" class="btn-cmm-toggle" id="btnCmmToggle">🔒 Editar datas do Final do CMM</button>
+    <div id="cmmEditor" class="cmm-editor" style="display:none">
+      <div class="dica" style="margin-bottom:14px">Estas datas valem para as <b>três unidades</b>. Altere com cuidado — o Final do CMM aparece no cronograma e na tabela de todas as turmas.</div>
+      <div class="cmm-grid" id="cmmGrid"></div>
+      <div style="margin-top:16px;display:flex;align-items:center;gap:12px">
+        <button class="btn-add" id="btnCmmSalvar">Salvar datas do CMM</button>
+        <span class="aviso-salvo" id="avisoCmm">✓ salvo</span>
+      </div>
     </div>
   </section>
   </div><!-- /vistaUnidade -->
 
 </div>
 <div class="tooltip" id="tip"></div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ============================================================
 // DADOS — cada unidade tem sua própria lista de turmas.
@@ -314,7 +359,7 @@
 const TURMAS_BASE=[
  {id:"251", termino:"2027-01-30", cmm:"2026-12-21", e1i:"2026-04-27", e1f:"2026-08-05", e2i:"2026-10-26", e2f:"2027-01-30"},
  {id:"M251",termino:"2027-02-27", cmm:"2027-03-05", e1i:"2026-04-27", e1f:"2026-08-05", e2i:"2026-11-23", e2f:"2027-02-26"},
- {id:"252", termino:"2027-03-30", cmm:"2027-04-12", e1i:"2026-08-24", e1f:"2026-12-09", e2i:"2027-01-06", e2f:"2027-03-30"},
+ {id:"252", termino:"2027-03-30", cmm:"2027-04-12", e1i:"2026-08-24", e1f:"2026-12-07", e2i:"2027-01-06", e2f:"2027-03-30"},
  {id:"M252",termino:"2027-05-30", cmm:"2027-05-26", e1i:"2026-08-24", e1f:"2026-12-07", e2i:"2027-01-06", e2f:"2027-03-30"},
  {id:"253", termino:"2027-06-30", cmm:"2027-07-07", e1i:"2026-10-13", e1f:"2027-02-17", e2i:"2027-04-09", e2f:"2027-06-30"},
  {id:"M253",termino:"2027-08-30", cmm:"2027-09-01", e1i:"2026-10-13", e1f:"2027-02-17", e2i:"2027-04-09", e2f:"2027-06-30"},
@@ -331,6 +376,11 @@ const UNIDADES=[
  {chave:"vendanova",nome:"Venda Nova",     turmas:clonar(TURMAS_BASE)}
 ];
 
+// ---- Supabase (banco compartilhado entre computadores) ----
+const SUPABASE_URL="https://uuurxnwttokdwahescwu.supabase.co";
+const SUPABASE_KEY="sb_publishable_zxt4r7TUgCdddqDaB7m0Hg_2I_adQtI";
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
 // ============================================================
 const D=s=>{const[a,m,d]=s.split("-").map(Number);return new Date(a,m-1,d)};
 const fmt=d=>d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"});
@@ -343,17 +393,20 @@ const nomes=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","
 const recessos=[["2026-12-22","2027-01-06"],["2027-12-22","2028-01-06"]];
 const TURNOS=[["M","Manhã"],["T","Tarde"],["N","Noite"]];
 
-// ---- nº de alunos por unidade/turma/turno (salvo no navegador) ----
-const CHAVE_ALUNOS="proz_alunos_estagio_v1";
+// ---- nº de alunos por unidade/turma/turno (salvo no Supabase) ----
 let alunos={};
-try{alunos=JSON.parse(localStorage.getItem(CHAVE_ALUNOS))||{}}catch(e){alunos={}}
 function getAlunos(uni,turma,turno){return (alunos[uni]&&alunos[uni][turma]&&alunos[uni][turma][turno])||0}
-function setAlunos(uni,turma,turno,v){
+async function setAlunos(uni,turma,turno,v){
+  const val=Math.max(0,parseInt(v)||0);
   alunos[uni]=alunos[uni]||{};alunos[uni][turma]=alunos[uni][turma]||{};
-  alunos[uni][turma][turno]=Math.max(0,parseInt(v)||0);
-  try{localStorage.setItem(CHAVE_ALUNOS,JSON.stringify(alunos))}catch(e){}
+  alunos[uni][turma][turno]=val;
   const av=document.getElementById("avisoSalvo");
   av.classList.add("mostrar");clearTimeout(av._t);av._t=setTimeout(()=>av.classList.remove("mostrar"),1500);
+  const{error}=await supabaseClient.from("alunos").upsert(
+    {unidade:uni,turma,turno,quantidade:val},
+    {onConflict:"unidade,turma,turno"}
+  );
+  if(error)console.error("Erro ao salvar alunos:",error);
 }
 function totalTurma(uni,turma){return TURNOS.reduce((s,[sig])=>s+getAlunos(uni,turma,sig),0)}
 
@@ -548,12 +601,19 @@ function renderGeral(){
   ligarTooltips();
 }
 
-// ---- Campos de estágio (persistência local) ----
-const CHAVE_CAMPOS="proz_campos_estagio_v1";
-let campos;
-try{campos=JSON.parse(localStorage.getItem(CHAVE_CAMPOS))||[]}catch(e){campos=[]}
-function salvarCampos(){try{localStorage.setItem(CHAVE_CAMPOS,JSON.stringify(campos))}catch(e){}}
+// ---- Campos de estágio (persistência no Supabase) ----
+let campos=[];
+async function sincronizarCampo(c){
+  const{error}=await supabaseClient.from("campos").update({
+    nome:c.nome,unidade:c.unidade,regime:c.regime,
+    m:c.M||0,t:c.T||0,n:c.N||0,
+    docs:c.docs||"",horario:c.horario||"",contato:c.contato||"",
+    ocupacoes:c.ocupacoes||[]
+  }).eq("id",c.id);
+  if(error)console.error("Erro ao salvar campo:",error);
+}
 const detalhesAbertos=new Set();
+const editandoCampo=new Set();
 function ocupadasHoje(c){
   return (c.ocupacoes||[]).reduce((s,o)=>{
     const de=D(o.de),ate=D(o.ate);
@@ -600,82 +660,122 @@ function renderCampos(){
     <div class="card"><div class="num">${pico.total}</div><div class="lbl">pico de demanda · ${mesLongo(pico.d)}</div></div>
     <div class="card destaque"><div class="num ${saldo>=0?"saldo-pos":"saldo-neg"}">${saldo>=0?"+":""}${saldo}</div><div class="lbl">saldo de vagas no pico</div></div>`;
 
-  document.getElementById("tbodyCampos").innerHTML=campos.length?campos.map((c,i)=>{
+  const esc=s=>(s||"").replace(/"/g,"&quot;");
+  document.getElementById("gridCampos").innerHTML=campos.length?campos.map((c,i)=>{
     const cap=(c.M||0)+(c.T||0)+(c.N||0);
     const ocup=ocupadasHoje(c);
-    return`<tr>
-    <td class="turma">${c.nome}</td>
-    <td>${NOME_UNI[c.unidade]||c.unidade}</td>
-    <td><button class="btn-regime ${c.regime==="3x2"?"r3x2":"diaria"}" data-reg="${i}" title="Clique para alternar entre Diária e 3x2">${c.regime==="3x2"?"3x2":"Diária"}</button></td>
-    <td><input type="number" class="inp-alunos inp-campo" min="0" max="999" value="${c.M||""}" placeholder="0" data-i="${i}" data-p="M"></td>
-    <td><input type="number" class="inp-alunos inp-campo" min="0" max="999" value="${c.T||""}" placeholder="0" data-i="${i}" data-p="T"></td>
-    <td><input type="number" class="inp-alunos inp-campo" min="0" max="999" value="${c.N||""}" placeholder="0" data-i="${i}" data-p="N"></td>
-    <td><b>${cap}</b></td>
-    <td class="oc-num ${ocup>cap?"saldo-neg":""}">${ocup} <span class="livres">/ ${Math.max(0,cap-ocup)} livres</span></td>
-    <td style="white-space:nowrap"><button class="btn-detalhes ${detalhesAbertos.has(i)?"aberto":""}" data-det="${i}">Detalhes</button><button class="btn-remover" data-rm="${i}">Remover</button></td>
-  </tr>
-  <tr class="tr-detalhes" data-detrow="${i}" style="display:${detalhesAbertos.has(i)?"":"none"}">
-    <td colspan="9">
-      <div class="det-grid">
-        <label>Documentos necessários<textarea class="inp-det" data-i="${i}" data-c="docs" placeholder="Ex.: carteira de vacinação, RG, termo de compromisso assinado...">${c.docs||""}</textarea></label>
-        <label>Horário de estágio<input type="text" class="inp-det" data-i="${i}" data-c="horario" placeholder="Ex.: 7h às 12h (manhã) / 13h às 18h (tarde)" value="${(c.horario||"").replace(/"/g,"&quot;")}"></label>
-        <label>Contato do responsável<input type="text" class="inp-det" data-i="${i}" data-c="contato" placeholder="Ex.: Enf. Maria Silva — (31) 99999-0000" value="${(c.contato||"").replace(/"/g,"&quot;")}"></label>
+    const livres=Math.max(0,cap-ocup);
+    const editando=editandoCampo.has(i);
+    const detAberto=detalhesAbertos.has(i);
+    const expandido=editando||detAberto;
+    const corpo=editando?`
+      <div class="cc-edit">
+        <label class="wide">Nome do campo<input type="text" data-ed="nome" data-i="${i}" value="${esc(c.nome)}" maxlength="80"></label>
+        <label>Unidade<select data-ed="unidade" data-i="${i}">
+          <option value="bh"${c.unidade==="bh"?" selected":""}>Belo Horizonte</option>
+          <option value="contagem"${c.unidade==="contagem"?" selected":""}>Contagem</option>
+          <option value="vendanova"${c.unidade==="vendanova"?" selected":""}>Venda Nova</option>
+          <option value="todas"${c.unidade==="todas"?" selected":""}>Todas as unidades</option>
+        </select></label>
+        <label>Tipo de vaga<select data-ed="regime" data-i="${i}">
+          <option value="diaria"${c.regime!=="3x2"?" selected":""}>Diária</option>
+          <option value="3x2"${c.regime==="3x2"?" selected":""}>3x2</option>
+        </select></label>
+        <label>Manhã<input type="number" min="0" max="999" data-ed="M" data-i="${i}" value="${c.M||""}" placeholder="0"></label>
+        <label>Tarde<input type="number" min="0" max="999" data-ed="T" data-i="${i}" value="${c.T||""}" placeholder="0"></label>
+        <label>Noite<input type="number" min="0" max="999" data-ed="N" data-i="${i}" value="${c.N||""}" placeholder="0"></label>
+      </div>`:`
+      <div class="cc-vagas">
+        <div class="cc-vaga"><div class="vv">${c.M||0}</div><div class="ll">Manhã</div></div>
+        <div class="cc-vaga"><div class="vv">${c.T||0}</div><div class="ll">Tarde</div></div>
+        <div class="cc-vaga"><div class="vv">${c.N||0}</div><div class="ll">Noite</div></div>
       </div>
-      <div class="oc-titulo">Vagas ocupadas neste campo</div>
-      <div class="oc-form" style="grid-template-columns:80px 110px 1.1fr 110px 1fr 1fr auto">
-        <label>Vagas<input type="number" min="1" max="999" placeholder="0" data-ocv="${i}"></label>
-        <label>Período<select data-ocp="${i}"><option value="Todos">Todos</option><option value="Manhã">Manhã</option><option value="Tarde">Tarde</option><option value="Noite">Noite</option></select></label>
-        <label>Unidade ocupante<select data-ocu="${i}"><option value="Belo Horizonte">Belo Horizonte</option><option value="Contagem">Contagem</option><option value="Venda Nova">Venda Nova</option></select></label>
-        <label>Plantão<select data-ocpl="${i}"><option value="Diário">Diário</option><option value="Ímpar">Ímpar</option><option value="Par">Par</option></select></label>
-        <label>De<input type="date" data-ocde="${i}"></label>
-        <label>Até<input type="date" data-ocate="${i}"></label>
-        <button class="btn-oc" data-ocadd="${i}">+ Registrar ocupação</button>
+      <div class="cc-total"><span>Capacidade total</span><b>${cap}</b></div>
+      <div class="cc-ocup">Ocupadas hoje: <b>${ocup}</b> · <span class="${ocup>cap?"neg":""}">${livres} livres</span></div>`;
+    const acoes=editando?`
+      <button class="btn-editar" data-salvar="${i}">Salvar</button>
+      <button class="btn-detalhes" data-cancelar="${i}">Cancelar</button>`:`
+      <button class="btn-editar" data-editar="${i}">Editar</button>
+      <button class="btn-detalhes ${detAberto?"aberto":""}" data-det="${i}">Detalhes</button>
+      <button class="btn-remover" data-rm="${i}">Remover</button>`;
+    const detalhe=detAberto?`
+      <div class="cc-detalhe">
+        <div class="det-grid">
+          <label>Documentos necessários<textarea class="inp-det" data-i="${i}" data-c="docs" placeholder="Ex.: carteira de vacinação, RG, termo de compromisso assinado...">${c.docs||""}</textarea></label>
+          <label>Horário de estágio<input type="text" class="inp-det" data-i="${i}" data-c="horario" placeholder="Ex.: 7h às 12h (manhã) / 13h às 18h (tarde)" value="${esc(c.horario)}"></label>
+          <label>Contato do responsável<input type="text" class="inp-det" data-i="${i}" data-c="contato" placeholder="Ex.: Enf. Maria Silva — (31) 99999-0000" value="${esc(c.contato)}"></label>
+        </div>
+        <div class="oc-titulo">Vagas ocupadas neste campo</div>
+        <div class="oc-form" style="grid-template-columns:80px 110px 1.1fr 110px 1fr 1fr auto">
+          <label>Vagas<input type="number" min="1" max="999" placeholder="0" data-ocv="${i}"></label>
+          <label>Período<select data-ocp="${i}"><option value="Todos">Todos</option><option value="Manhã">Manhã</option><option value="Tarde">Tarde</option><option value="Noite">Noite</option></select></label>
+          <label>Unidade ocupante<select data-ocu="${i}"><option value="Belo Horizonte">Belo Horizonte</option><option value="Contagem">Contagem</option><option value="Venda Nova">Venda Nova</option></select></label>
+          <label>Plantão<select data-ocpl="${i}"><option value="Diário">Diário</option><option value="Ímpar">Ímpar</option><option value="Par">Par</option></select></label>
+          <label>De<input type="date" data-ocde="${i}"></label>
+          <label>Até<input type="date" data-ocate="${i}"></label>
+          <button class="btn-oc" data-ocadd="${i}">+ Registrar ocupação</button>
+        </div>
+        ${(c.ocupacoes&&c.ocupacoes.length)?c.ocupacoes.map((o,j)=>{
+          const de=D(o.de),ate=D(o.ate);
+          const badge=hoje>ate?`<span class="badge-oc-fim">Encerrada</span>`:hoje<de?`<span class="badge-oc-fut">Futura</span>`:`<span class="badge-oc-ativa">Ativa</span>`;
+          const plantao=o.pl&&o.pl!=="Diário"?` · Plantão ${o.pl}`:"";
+          return`<div class="oc-item"><b>${o.v} vaga${o.v>1?"s":""}</b><span>· ${o.p}${plantao}</span>${o.u?`<span class="badge-oc-uni">${o.u}</span>`:""}<span>· ${fmt(de)} → ${fmt(ate)}</span>${badge}<button class="btn-remover" data-ocrm="${i}-${j}" style="margin-left:auto">Remover</button></div>`;
+        }).join(""):`<div class="oc-vazio">Nenhuma ocupação registrada — use o formulário acima para lançar a primeira.</div>`}
+      </div>`:"";
+    const regimePill=`<span class="cc-uni" style="background:${c.regime==="3x2"?"var(--laranja-100)":"var(--roxo-100)"};color:${c.regime==="3x2"?"var(--laranja-600)":"var(--roxo-700)"}">${c.regime==="3x2"?"3x2":"Diária"}</span>`;
+    return`<div class="campo-card ${expandido?"expandido":""}">
+      <div class="cc-topo">
+        <div class="cc-nome">${c.nome}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <span class="cc-uni">${NOME_UNI[c.unidade]||c.unidade}</span>
+          ${editando?"":regimePill}
+        </div>
       </div>
-      ${(c.ocupacoes&&c.ocupacoes.length)?c.ocupacoes.map((o,j)=>{
-        const de=D(o.de),ate=D(o.ate);
-        const badge=hoje>ate?`<span class="badge-oc-fim">Encerrada</span>`:hoje<de?`<span class="badge-oc-fut">Futura</span>`:`<span class="badge-oc-ativa">Ativa</span>`;
-        const plantao=o.pl&&o.pl!=="Diário"?` · Plantão ${o.pl}`:"";
-        return`<div class="oc-item"><b>${o.v} vaga${o.v>1?"s":""}</b><span>· ${o.p}${plantao}</span>${o.u?`<span class="badge-oc-uni">${o.u}</span>`:""}<span>· ${fmt(de)} → ${fmt(ate)}</span>${badge}<button class="btn-remover" data-ocrm="${i}-${j}" style="margin-left:auto">Remover</button></div>`;
-      }).join(""):`<div class="oc-vazio">Nenhuma ocupação registrada — use o formulário acima para lançar a primeira.</div>`}
-    </td>
-  </tr>`}).join("")
-  :`<tr><td colspan="9" style="color:var(--cinza-400)">Nenhum campo cadastrado ainda — use o formulário acima para adicionar o primeiro.</td></tr>`;
+      ${corpo}
+      <div class="cc-acoes">${acoes}</div>
+      ${detalhe}
+    </div>`;
+  }).join("")
+  :`<div class="oc-vazio" style="grid-column:1/-1;padding:20px;text-align:center">Nenhum campo cadastrado ainda — use o formulário acima para adicionar o primeiro.</div>`;
 
-  document.getElementById("tfootCampos").innerHTML=campos.length?`<tr>
-    <td>Total</td><td>${campos.length} campo${campos.length>1?"s":""}</td>
-    <td>Diárias ${totDiaria} · 3x2 ${tot3x2}</td>
-    <td>${somaM}</td><td>${somaT}</td><td>${somaN}</td><td>${capTotal}</td><td>${ocupTotal} / ${livresHoje} livres</td><td></td></tr>`:"";
-
-  document.querySelectorAll(".inp-campo").forEach(inp=>{
-    inp.addEventListener("change",()=>{
-      campos[+inp.dataset.i][inp.dataset.p]=Math.max(0,parseInt(inp.value)||0);
-      salvarCampos();renderCampos();
-    });
+  document.querySelectorAll("[data-editar]").forEach(btn=>{
+    btn.addEventListener("click",()=>{editandoCampo.add(+btn.dataset.editar);renderCampos();});
   });
-  document.querySelectorAll("[data-reg]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      const c=campos[+btn.dataset.reg];
-      c.regime=c.regime==="3x2"?"diaria":"3x2";
-      salvarCampos();renderCampos();
+  document.querySelectorAll("[data-cancelar]").forEach(btn=>{
+    btn.addEventListener("click",()=>{editandoCampo.delete(+btn.dataset.cancelar);renderCampos();});
+  });
+  document.querySelectorAll("[data-salvar]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const i=+btn.dataset.salvar,c=campos[i];
+      const g=k=>document.querySelector(`[data-ed="${k}"][data-i="${i}"]`);
+      const nome=g("nome").value.trim();
+      if(!nome){g("nome").focus();return;}
+      c.nome=nome;
+      c.unidade=g("unidade").value;
+      c.regime=g("regime").value;
+      c.M=Math.max(0,parseInt(g("M").value)||0);
+      c.T=Math.max(0,parseInt(g("T").value)||0);
+      c.N=Math.max(0,parseInt(g("N").value)||0);
+      await sincronizarCampo(c);
+      editandoCampo.delete(i);renderCampos();
     });
   });
   document.querySelectorAll("[data-det]").forEach(btn=>{
     btn.addEventListener("click",()=>{
       const i=+btn.dataset.det;
       detalhesAbertos.has(i)?detalhesAbertos.delete(i):detalhesAbertos.add(i);
-      const row=document.querySelector(`[data-detrow="${i}"]`);
-      if(row)row.style.display=detalhesAbertos.has(i)?"":"none";
-      btn.classList.toggle("aberto",detalhesAbertos.has(i));
+      renderCampos();
     });
   });
   document.querySelectorAll(".inp-det").forEach(inp=>{
-    inp.addEventListener("change",()=>{
-      campos[+inp.dataset.i][inp.dataset.c]=inp.value.trim();
-      salvarCampos(); // salva sem redesenhar, para não perder o foco
+    inp.addEventListener("change",async()=>{
+      const c=campos[+inp.dataset.i];
+      c[inp.dataset.c]=inp.value.trim();
+      await sincronizarCampo(c); // salva sem redesenhar, para não perder o foco
     });
   });
   document.querySelectorAll("[data-ocadd]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
+    btn.addEventListener("click",async()=>{
       const i=+btn.dataset.ocadd;
       const v=Math.max(0,parseInt(document.querySelector(`[data-ocv="${i}"]`).value)||0);
       const p=document.querySelector(`[data-ocp="${i}"]`).value;
@@ -685,23 +785,29 @@ function renderCampos(){
       const ate=document.querySelector(`[data-ocate="${i}"]`).value;
       if(!v||!de||!ate){alert("Preencha o número de vagas e as duas datas.");return;}
       if(D(ate)<D(de)){alert("A data final não pode ser anterior à inicial.");return;}
-      campos[i].ocupacoes=campos[i].ocupacoes||[];
-      campos[i].ocupacoes.push({v,p,u,pl,de,ate});
-      campos[i].ocupacoes.sort((a,b)=>D(a.de)-D(b.de));
-      salvarCampos();renderCampos();
+      const c=campos[i];
+      c.ocupacoes=c.ocupacoes||[];
+      c.ocupacoes.push({v,p,u,pl,de,ate});
+      c.ocupacoes.sort((a,b)=>D(a.de)-D(b.de));
+      await sincronizarCampo(c);renderCampos();
     });
   });
   document.querySelectorAll("[data-ocrm]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
+    btn.addEventListener("click",async()=>{
       const[i,j]=btn.dataset.ocrm.split("-").map(Number);
-      campos[i].ocupacoes.splice(j,1);
-      salvarCampos();renderCampos();
+      const c=campos[i];
+      c.ocupacoes.splice(j,1);
+      await sincronizarCampo(c);renderCampos();
     });
   });
   document.querySelectorAll("[data-rm]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      const c=campos[+btn.dataset.rm];
-      if(confirm(`Remover o campo "${c.nome}"?`)){campos.splice(+btn.dataset.rm,1);detalhesAbertos.clear();salvarCampos();renderCampos();}
+    btn.addEventListener("click",async()=>{
+      const idx=+btn.dataset.rm;
+      const c=campos[idx];
+      if(!confirm(`Remover o campo "${c.nome}"?`))return;
+      const{error}=await supabaseClient.from("campos").delete().eq("id",c.id);
+      if(error){alert("Erro ao remover campo: "+error.message);return;}
+      campos.splice(idx,1);detalhesAbertos.clear();renderCampos();
     });
   });
 }
@@ -712,18 +818,22 @@ document.getElementById("fcRegime").addEventListener("click",e=>{
   regimeNovo=b.dataset.r;
   document.querySelectorAll("#fcRegime button").forEach(x=>x.classList.toggle("on",x===b));
 });
-document.getElementById("fcAdd").addEventListener("click",()=>{
+document.getElementById("fcAdd").addEventListener("click",async()=>{
   const nome=document.getElementById("fcNome").value.trim();
   if(!nome){document.getElementById("fcNome").focus();return;}
-  campos.push({
+  const novo={
     nome,
     unidade:document.getElementById("fcUnidade").value,
     regime:regimeNovo,
     M:Math.max(0,parseInt(document.getElementById("fcM").value)||0),
     T:Math.max(0,parseInt(document.getElementById("fcT").value)||0),
     N:Math.max(0,parseInt(document.getElementById("fcN").value)||0)
-  });
-  salvarCampos();
+  };
+  const{data,error}=await supabaseClient.from("campos").insert({
+    nome:novo.nome,unidade:novo.unidade,regime:novo.regime,m:novo.M,t:novo.T,n:novo.N
+  }).select().single();
+  if(error){alert("Erro ao salvar campo: "+error.message);return;}
+  campos.push({...novo,id:data.id,docs:"",horario:"",contato:"",ocupacoes:[]});
   ["fcNome","fcM","fcT","fcN"].forEach(id=>document.getElementById(id).value="");
   renderCampos();
 });
@@ -742,6 +852,36 @@ function aplicarFiltroTurno(){
   });
 }
 
+// ---- editor de datas do CMM (rodapé da unidade; vale p/ as 3 unidades) ----
+function renderCmmEditor(){
+  const ref=UNIDADES[0].turmas;
+  document.getElementById("cmmGrid").innerHTML=ref.map(t=>
+    `<label>${t.id}<input type="date" class="inp-cmm" data-turma="${t.id}" value="${t.cmm}"></label>`
+  ).join("");
+}
+document.getElementById("btnCmmToggle").addEventListener("click",()=>{
+  const ed=document.getElementById("cmmEditor"),btn=document.getElementById("btnCmmToggle");
+  const abrir=ed.style.display==="none";
+  ed.style.display=abrir?"":"none";
+  btn.classList.toggle("aberto",abrir);
+  btn.textContent=(abrir?"🔓 ":"🔒 ")+"Editar datas do Final do CMM";
+});
+document.getElementById("btnCmmSalvar").addEventListener("click",async()=>{
+  const updates=[];
+  document.querySelectorAll(".inp-cmm").forEach(inp=>{
+    if(!inp.value)return;
+    const turma=inp.dataset.turma;
+    UNIDADES.forEach(u=>{const t=u.turmas.find(x=>x.id===turma);if(t)t.cmm=inp.value;});
+    updates.push({turma,cmm:inp.value});
+  });
+  const{error}=await supabaseClient.from("turma_cmm").upsert(updates,{onConflict:"turma"});
+  if(error){alert("Erro ao salvar datas do CMM: "+error.message);return;}
+  const av=document.getElementById("avisoCmm");
+  av.classList.add("mostrar");clearTimeout(av._t);av._t=setTimeout(()=>av.classList.remove("mostrar"),1500);
+  render();          // atualiza gantt e tabela da unidade atual
+  renderCmmEditor(); // reflete os valores salvos
+});
+
 // ---- tooltips ----
 const tip=document.getElementById("tip");
 function ligarTooltips(){
@@ -755,9 +895,41 @@ function ligarTooltips(){
   });
 }
 
-// inicia na Visão Geral; as abas de unidade renderizam ao serem abertas
-render();       // prepara a vista de unidade em segundo plano
-renderGeral();  // painel inicial
+// inicia na Visão Geral; busca os dados no Supabase antes da primeira renderização
+async function iniciar(){
+  const status=document.getElementById("statusCarregamento");
+  status.textContent="Carregando dados...";
+  const[{data:alunosRows,error:errA},{data:camposRows,error:errC},{data:cmmRows,error:errM}]=await Promise.all([
+    supabaseClient.from("alunos").select("*"),
+    supabaseClient.from("campos").select("*").order("created_at",{ascending:true}),
+    supabaseClient.from("turma_cmm").select("*")
+  ]);
+  if(errA)console.error("Erro ao carregar alunos:",errA);
+  if(errC)console.error("Erro ao carregar campos:",errC);
+  if(errM)console.error("Erro ao carregar datas do CMM:",errM);
+  status.textContent=(errA||errC||errM)
+    ?"Não foi possível conectar ao banco de dados — mostrando o cronograma sem os nº de alunos e campos salvos. Verifique sua conexão e recarregue a página."
+    :"";
+  // aplica as datas do CMM salvas (valem para as 3 unidades)
+  (cmmRows||[]).forEach(r=>{
+    UNIDADES.forEach(u=>{const t=u.turmas.find(x=>x.id===r.turma);if(t)t.cmm=r.cmm;});
+  });
+  (alunosRows||[]).forEach(r=>{
+    alunos[r.unidade]=alunos[r.unidade]||{};
+    alunos[r.unidade][r.turma]=alunos[r.unidade][r.turma]||{};
+    alunos[r.unidade][r.turma][r.turno]=r.quantidade;
+  });
+  campos=(camposRows||[]).map(r=>({
+    id:r.id,nome:r.nome,unidade:r.unidade,regime:r.regime||"diaria",
+    M:r.m||0,T:r.t||0,N:r.n||0,
+    docs:r.docs||"",horario:r.horario||"",contato:r.contato||"",
+    ocupacoes:r.ocupacoes||[]
+  }));
+  render();          // prepara a vista de unidade em segundo plano
+  renderCmmEditor(); // preenche o editor de datas do CMM
+  renderGeral();     // painel inicial
+}
+iniciar();
 </script>
 </body>
 </html>
