@@ -220,6 +220,30 @@
   .cmm-grid label{display:flex;flex-direction:column;gap:5px;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--roxo-900)}
   .cmm-grid input{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--roxo-900);padding:8px 10px;border:1.5px solid var(--linha);border-radius:8px;background:#fff}
   .cmm-grid input:focus{outline:none;border-color:var(--laranja-500)}
+  .tab-datas{border-collapse:collapse;min-width:820px;font-size:12.5px}
+  .tab-datas th{font-family:'Sora',sans-serif;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--roxo-700);background:var(--roxo-100);padding:8px 10px;text-align:left;white-space:nowrap}
+  .tab-datas td{padding:5px 8px;border-bottom:1px solid var(--linha)}
+  .tab-datas td.turma{font-family:'Sora',sans-serif;font-weight:700;color:var(--roxo-900)}
+  .tab-datas input{font-family:'Inter',sans-serif;font-size:12.5px;color:var(--roxo-900);padding:6px 8px;border:1.5px solid var(--linha);border-radius:7px;background:#fff}
+  .tab-datas input:focus{outline:none;border-color:var(--laranja-500)}
+  .tab-plantao{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+  .tab-plantao th{font-family:'Sora',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--roxo-900);padding:10px 12px;text-align:left;white-space:nowrap}
+  .tab-plantao td{padding:8px 12px;border-bottom:1px solid var(--linha);white-space:nowrap}
+  .tab-plantao td.turma{font-family:'Sora',sans-serif;font-weight:700;color:var(--roxo-900)}
+  .tab-plantao tr.vira{background:#FFF7F0}
+  .tab-plantao tr.vira td.sit{color:var(--laranja-600);font-weight:800;text-transform:uppercase;font-size:11.5px;letter-spacing:.03em}
+  .tab-plantao tr.normal td.sit{color:var(--cinza-400);font-weight:700;font-size:11.5px}
+  .tab-plantao tr.hoje{box-shadow:inset 3px 0 0 var(--laranja-600)}
+  .tab-plantao .pdia{font-weight:700;color:var(--roxo-700)}
+  .add-turma{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;align-items:end;margin-bottom:20px;background:#fff;border:1px solid var(--linha);border-radius:12px;padding:14px}
+  .add-turma label{display:flex;flex-direction:column;gap:5px;font-size:10.5px;font-weight:700;color:var(--cinza-400);text-transform:uppercase;letter-spacing:.04em}
+  .add-turma input,.add-turma select{font-family:'Inter',sans-serif;font-size:13px;color:var(--roxo-900);padding:8px 10px;border:1.5px solid var(--linha);border-radius:8px;background:#FDFCFF}
+  .add-turma input:focus,.add-turma select:focus{outline:none;border-color:var(--laranja-500);background:#fff}
+  .add-turma .btn-add{align-self:end}
+  .tab-datas td .btn-remover{padding:4px 9px;font-size:11px}
+  .tab-datas .tuni{font-size:10px;font-weight:700;color:var(--roxo-700);background:var(--roxo-100);padding:2px 7px;border-radius:999px;white-space:nowrap}
+  .tab-datas .ttipo-especial{color:var(--laranja-600)}
+  .tab-datas .ttipo-sabado{color:var(--verde)}
 
   @media (max-width:720px){
     body{padding:16px 10px 40px}
@@ -276,17 +300,29 @@
     <section class="painel">
       <h2>Cadastrar campo de estágio</h2>
       <div class="dica">Informe o nome do campo, a unidade atendida e as vagas disponíveis em cada período. Os campos ficam salvos no banco de dados e são compartilhados entre todos os computadores.</div>
-      <div class="form-campo" style="grid-template-columns:2fr 1.2fr 1.1fr repeat(3,86px) auto">
+      <div class="form-campo" style="grid-template-columns:2fr 1.2fr 1.1fr repeat(5,72px) auto">
         <label>Nome do campo<input type="text" id="fcNome" placeholder="Ex.: Hospital Estadual de Diadema" maxlength="80"></label>
         <label>Unidade<select id="fcUnidade"><option value="bh">Belo Horizonte</option><option value="contagem">Contagem</option><option value="vendanova">Venda Nova</option><option value="todas">Todas as unidades</option></select></label>
         <label>Tipo de vaga<span class="seg-regime" id="fcRegime"><button type="button" data-r="diaria" class="on">Diária</button><button type="button" data-r="3x2">3x2</button></span></label>
         <label>Manhã<input type="number" id="fcM" min="0" max="999" placeholder="0"></label>
         <label>Tarde<input type="number" id="fcT" min="0" max="999" placeholder="0"></label>
         <label>Noite<input type="number" id="fcN" min="0" max="999" placeholder="0"></label>
+        <label>Sábado<input type="number" id="fcSab" min="0" max="999" placeholder="0"></label>
+        <label>Domingo<input type="number" id="fcDom" min="0" max="999" placeholder="0"></label>
         <button class="btn-add" id="fcAdd">+ Adicionar campo</button>
       </div>
       <div class="campos-grid" id="gridCampos"></div>
       <div class="nota">Cada campo aparece como um card. Clique em <b>Editar</b> para alterar nome, unidade, tipo de vaga ou o número de vagas por período; em <b>Detalhes</b> para documentos, horário, contato e ocupações. Os totais no topo se atualizam sozinhos.</div>
+    </section>
+
+    <section class="painel">
+      <h2>Calendário de plantão · Par / Ímpar</h2>
+      <div class="dica">No plantão alternado, meses com número <b>ímpar</b> de dias (31 ou 29) invertem a paridade — quem é <b>par</b> joga nos dias ímpares e vice-versa. Meses de 28 ou 30 dias seguem o normal. Use esta tabela como referência ao lançar ocupações com plantão Par ou Ímpar.</div>
+      <div class="legenda">
+        <span><i class="chip" style="background:var(--laranja-500)"></i> Mês que inverte (ímpar de dias)</span>
+        <span><i class="chip" style="background:var(--roxo-100)"></i> Mês normal</span>
+      </div>
+      <div style="overflow-x:auto"><div id="tabelaPlantao"></div></div>
     </section>
   </div>
 
@@ -335,13 +371,29 @@
   </section>
 
   <section class="painel painel-cmm">
-    <button type="button" class="btn-cmm-toggle" id="btnCmmToggle">🔒 Editar datas do Final do CMM</button>
-    <div id="cmmEditor" class="cmm-editor" style="display:none">
-      <div class="dica" style="margin-bottom:14px">Estas datas valem para as <b>três unidades</b>. Altere com cuidado — o Final do CMM aparece no cronograma e na tabela de todas as turmas.</div>
-      <div class="cmm-grid" id="cmmGrid"></div>
+    <button type="button" class="btn-cmm-toggle" id="btnDatasToggle">🔒 Editar datas das turmas</button>
+    <div id="datasEditor" class="cmm-editor" style="display:none">
+      <div class="dica" style="margin-bottom:14px">Estas datas alimentam todo o painel: linha do tempo, situação de cada turma e o cálculo de vagas. Edite as datas na tabela e clique em <b>Salvar datas</b>. Use o formulário abaixo para <b>adicionar uma turma nova</b> (regular, especial ou de sábado).</div>
+
+      <div class="oc-titulo" style="margin-top:0">Adicionar turma</div>
+      <div class="add-turma">
+        <label>Turma<input type="text" id="ntId" placeholder="Ex.: 263 / SAB1" maxlength="20"></label>
+        <label>Tipo<select id="ntTipo"><option value="regular">Regular</option><option value="especial">Especial</option><option value="sabado">Sábado</option></select></label>
+        <label>Unidade<select id="ntUni"><option value="todas">Todas</option><option value="bh">Belo Horizonte</option><option value="contagem">Contagem</option><option value="vendanova">Venda Nova</option></select></label>
+        <label>Início Est. I<input type="date" id="ntE1i"></label>
+        <label>Final Est. I<input type="date" id="ntE1f"></label>
+        <label>Início Est. II<input type="date" id="ntE2i"></label>
+        <label>Final Est. II<input type="date" id="ntE2f"></label>
+        <label>Final CMM<input type="date" id="ntCmm"></label>
+        <label>Término<input type="date" id="ntTermino"></label>
+        <button class="btn-add" id="btnAddTurma">+ Adicionar turma</button>
+      </div>
+
+      <div class="oc-titulo">Datas das turmas</div>
+      <div id="datasGrid" style="overflow-x:auto"></div>
       <div style="margin-top:16px;display:flex;align-items:center;gap:12px">
-        <button class="btn-add" id="btnCmmSalvar">Salvar datas do CMM</button>
-        <span class="aviso-salvo" id="avisoCmm">✓ salvo</span>
+        <button class="btn-add" id="btnDatasSalvar">Salvar datas</button>
+        <span class="aviso-salvo" id="avisoDatas">✓ salvo</span>
       </div>
     </div>
   </section>
@@ -370,11 +422,23 @@ const TURMAS_BASE=[
  {id:"262", termino:"2028-04-30", cmm:"2028-04-17", e1i:"2027-08-02", e1f:"2027-11-16", e2i:"2028-01-25", e2f:"2028-04-17"}
 ];
 const clonar=a=>JSON.parse(JSON.stringify(a));
+// lista mestra de turmas (carregada do banco; começa com as turmas base)
+let turmaLista=TURMAS_BASE.map((t,i)=>({...t,unidades:"bh,contagem,vendanova",tipo:"regular",ordem:i}));
 const UNIDADES=[
- {chave:"bh",       nome:"Belo Horizonte", turmas:clonar(TURMAS_BASE)},
- {chave:"contagem", nome:"Contagem",       turmas:clonar(TURMAS_BASE)},
- {chave:"vendanova",nome:"Venda Nova",     turmas:clonar(TURMAS_BASE)}
+ {chave:"bh",       nome:"Belo Horizonte", turmas:[]},
+ {chave:"contagem", nome:"Contagem",       turmas:[]},
+ {chave:"vendanova",nome:"Venda Nova",     turmas:[]}
 ];
+// distribui as turmas para cada unidade conforme o campo "unidades"
+function montarUnidades(){
+  UNIDADES.forEach(u=>{
+    u.turmas=turmaLista
+      .filter(t=>(t.unidades||"bh,contagem,vendanova").split(",").map(s=>s.trim()).includes(u.chave))
+      .sort((a,b)=>((a.ordem||0)-(b.ordem||0))||(a.id<b.id?-1:1))
+      .map(t=>clonar(t));
+  });
+}
+montarUnidades();
 
 // ---- Supabase (banco compartilhado entre computadores) ----
 const SUPABASE_URL="https://uuurxnwttokdwahescwu.supabase.co";
@@ -386,11 +450,11 @@ const D=s=>{const[a,m,d]=s.split("-").map(Number);return new Date(a,m-1,d)};
 const fmt=d=>d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"});
 const fmtL=d=>d.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
 const hoje=new Date();hoje.setHours(0,0,0,0);
-const ini=new Date(2026,0,1), fim=new Date(2028,5,1);
-const total=fim-ini;
+let ini=new Date(2026,0,1), fim=new Date(2028,5,1);
+let total=fim-ini;
 const pos=d=>((d-ini)/total*100);
 const nomes=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
-const recessos=[["2026-12-22","2027-01-06"],["2027-12-22","2028-01-06"]];
+const recessos=[];
 const TURNOS=[["M","Manhã"],["T","Tarde"],["N","Noite"]];
 
 // ---- nº de alunos por unidade/turma/turno (salvo no Supabase) ----
@@ -412,9 +476,29 @@ function totalTurma(uni,turma){return TURNOS.reduce((s,[sig])=>s+getAlunos(uni,t
 
 document.getElementById("pillHoje").textContent="Hoje: "+fmtL(hoje);
 
-const meses=[];let c=new Date(ini);
-while(c<fim){const p=new Date(c.getFullYear(),c.getMonth()+1,1);
-  meses.push({d:new Date(c),w:(Math.min(p,fim)-c)/total*100});c=p}
+const meses=[];
+// recalcula o período (ini/fim/meses/recessos) a partir das datas das turmas
+function recalcularPeriodo(){
+  const todas=UNIDADES.flatMap(u=>u.turmas);
+  let min=Infinity,max=-Infinity;
+  todas.forEach(t=>["e1i","e1f","e2i","e2f","cmm","termino"].forEach(k=>{
+    if(!t[k])return;const x=D(t[k]).getTime();
+    if(x<min)min=x;if(x>max)max=x;
+  }));
+  if(isFinite(min)&&isFinite(max)){
+    const dmin=new Date(min),dmax=new Date(max);
+    ini=new Date(dmin.getFullYear(),dmin.getMonth(),1);
+    fim=new Date(dmax.getFullYear(),dmax.getMonth()+1,1);
+  }else{ini=new Date(2026,0,1);fim=new Date(2028,5,1);}
+  total=fim-ini;
+  meses.length=0;
+  let c=new Date(ini);
+  while(c<fim){const p=new Date(c.getFullYear(),c.getMonth()+1,1);
+    meses.push({d:new Date(c),w:(Math.min(p,fim)-c)/total*100});c=p;}
+  recessos.length=0;
+  for(let y=ini.getFullYear()-1;y<=fim.getFullYear();y++)recessos.push([`${y}-12-22`,`${y+1}-01-06`]);
+}
+recalcularPeriodo();
 
 function status(t){
   const e1i=D(t.e1i),e1f=D(t.e1f),e2i=D(t.e2i),e2f=D(t.e2f);
@@ -602,17 +686,31 @@ function renderGeral(){
 }
 
 // ---- Campos de estágio (persistência no Supabase) ----
+// 5 períodos de vaga por campo
+const PERIODOS=[["M","Manhã"],["T","Tarde"],["N","Noite"],["Sab","Sábado"],["Dom","Domingo"]];
+function capCampo(c){return PERIODOS.reduce((s,[k])=>s+(c[k]||0),0);}
 let campos=[];
 async function sincronizarCampo(c){
-  const{error}=await supabaseClient.from("campos").update({
+  const core={
     nome:c.nome,unidade:c.unidade,regime:c.regime,
     m:c.M||0,t:c.T||0,n:c.N||0,
     docs:c.docs||"",horario:c.horario||"",contato:c.contato||"",
     ocupacoes:c.ocupacoes||[]
-  }).eq("id",c.id);
+  };
+  const opt={
+    sab:c.Sab||0,dom:c.Dom||0,
+    crachas:c.crachas||"",preceptores:c.preceptores||"",
+    turma_par:c.turmaPar||"",turma_impar:c.turmaImpar||""
+  };
+  let{error}=await supabaseClient.from("campos").update({...core,...opt}).eq("id",c.id);
+  if(error && /column|coluna|sab|dom|crachas|preceptores|turma_par|turma_impar/i.test((error.message||"")+(error.details||""))){
+    // colunas novas ainda não criadas no banco — salva só as básicas
+    ({error}=await supabaseClient.from("campos").update(core).eq("id",c.id));
+  }
   if(error)console.error("Erro ao salvar campo:",error);
 }
 const detalhesAbertos=new Set();
+const ocupacoesAbertas=new Set();
 const editandoCampo=new Set();
 function ocupadasHoje(c){
   return (c.ocupacoes||[]).reduce((s,o)=>{
@@ -633,17 +731,45 @@ function picoDemanda(){ // maior demanda mensal total (3 unidades)
   return pico;
 }
 
+// ---- calendário de plantão par/ímpar (inverte em meses de 31 ou 29 dias) ----
+function diasNoMes(d){return new Date(d.getFullYear(),d.getMonth()+1,0).getDate();}
+// colPar/colImpar = títulos das colunas; labPar/labImpar = rótulo dentro de cada célula
+function tabelaPlantaoHTML(colPar,colImpar,labPar,labImpar){
+  const mesNome=d=>nomes[d.getMonth()]+"/"+d.getFullYear();
+  const mesAtual=new Date(hoje.getFullYear(),hoje.getMonth(),1);
+  const linhas=meses.map(m=>{
+    const nd=diasNoMes(m.d);
+    const inverte=(nd%2===1); // 31 ou 29 dias
+    const par=inverte?"dias ímpares":"dias pares";
+    const impar=inverte?"dias pares":"dias ímpares";
+    const ehHoje=m.d.getFullYear()===mesAtual.getFullYear()&&m.d.getMonth()===mesAtual.getMonth();
+    return `<tr class="${inverte?"vira":"normal"} ${ehHoje?"hoje":""}">
+      <td class="turma">${mesNome(m.d)}${ehHoje?" · hoje":""}</td>
+      <td>${nd} dias</td>
+      <td class="sit">${inverte?"inverte":"normal"}</td>
+      <td>${labPar} → <span class="pdia">${par}</span></td>
+      <td>${labImpar} → <span class="pdia">${impar}</span></td>
+    </tr>`;
+  }).join("");
+  return `<table class="tab-plantao">
+    <thead><tr><th>Mês</th><th>Nº de dias</th><th>Situação</th><th>${colPar}</th><th>${colImpar}</th></tr></thead>
+    <tbody>${linhas}</tbody></table>`;
+}
+function renderPlantao(){
+  document.getElementById("tabelaPlantao").innerHTML=
+    tabelaPlantaoHTML("Quem é PAR joga em","Quem é ÍMPAR joga em","Par","Ímpar");
+}
+
 function renderCampos(){
   document.getElementById("subTitulo").textContent=
     `Campos de estágio cadastrados · Capacidade de vagas por período comparada à demanda das turmas`;
+  renderPlantao();
 
   campos.forEach(c=>{if(!c.regime)c.regime="diaria"});
-  const somaM=campos.reduce((s,c)=>s+(c.M||0),0);
-  const somaT=campos.reduce((s,c)=>s+(c.T||0),0);
-  const somaN=campos.reduce((s,c)=>s+(c.N||0),0);
-  const capTotal=somaM+somaT+somaN;
-  const totDiaria=campos.filter(c=>c.regime==="diaria").reduce((s,c)=>s+(c.M||0)+(c.T||0)+(c.N||0),0);
-  const tot3x2=campos.filter(c=>c.regime==="3x2").reduce((s,c)=>s+(c.M||0)+(c.T||0)+(c.N||0),0);
+  const soma={};PERIODOS.forEach(([k])=>soma[k]=campos.reduce((s,c)=>s+(c[k]||0),0));
+  const capTotal=PERIODOS.reduce((s,[k])=>s+soma[k],0);
+  const totDiaria=campos.filter(c=>c.regime==="diaria").reduce((s,c)=>s+capCampo(c),0);
+  const tot3x2=campos.filter(c=>c.regime==="3x2").reduce((s,c)=>s+capCampo(c),0);
   const pico=picoDemanda();
   const saldo=capTotal-pico.total;
   const ocupTotal=campos.reduce((s,c)=>s+ocupadasHoje(c),0);
@@ -652,7 +778,7 @@ function renderCampos(){
 
   document.getElementById("cardsCampos").innerHTML=`
     <div class="card destaque"><div class="num">${campos.length}</div><div class="lbl">campos cadastrados</div></div>
-    <div class="card"><div class="num">${capTotal}</div><div class="lbl">vagas totais · M ${somaM} / T ${somaT} / N ${somaN}</div></div>
+    <div class="card"><div class="num">${capTotal}</div><div class="lbl">vagas totais · M ${soma.M} / T ${soma.T} / N ${soma.N} / Sáb ${soma.Sab} / Dom ${soma.Dom}</div></div>
     <div class="card"><div class="num">${totDiaria}</div><div class="lbl">vagas diárias</div></div>
     <div class="card"><div class="num">${tot3x2}</div><div class="lbl">vagas 3x2</div></div>
     <div class="card destaque"><div class="num">${ocupTotal}</div><div class="lbl">vagas ocupadas hoje</div></div>
@@ -662,12 +788,13 @@ function renderCampos(){
 
   const esc=s=>(s||"").replace(/"/g,"&quot;");
   document.getElementById("gridCampos").innerHTML=campos.length?campos.map((c,i)=>{
-    const cap=(c.M||0)+(c.T||0)+(c.N||0);
+    const cap=capCampo(c);
     const ocup=ocupadasHoje(c);
     const livres=Math.max(0,cap-ocup);
     const editando=editandoCampo.has(i);
     const detAberto=detalhesAbertos.has(i);
-    const expandido=editando||detAberto;
+    const ocupAberto=ocupacoesAbertas.has(i);
+    const expandido=editando||detAberto||ocupAberto;
     const corpo=editando?`
       <div class="cc-edit">
         <label class="wide">Nome do campo<input type="text" data-ed="nome" data-i="${i}" value="${esc(c.nome)}" maxlength="80"></label>
@@ -681,14 +808,10 @@ function renderCampos(){
           <option value="diaria"${c.regime!=="3x2"?" selected":""}>Diária</option>
           <option value="3x2"${c.regime==="3x2"?" selected":""}>3x2</option>
         </select></label>
-        <label>Manhã<input type="number" min="0" max="999" data-ed="M" data-i="${i}" value="${c.M||""}" placeholder="0"></label>
-        <label>Tarde<input type="number" min="0" max="999" data-ed="T" data-i="${i}" value="${c.T||""}" placeholder="0"></label>
-        <label>Noite<input type="number" min="0" max="999" data-ed="N" data-i="${i}" value="${c.N||""}" placeholder="0"></label>
+        ${PERIODOS.map(([k,l])=>`<label>${l}<input type="number" min="0" max="999" data-ed="${k}" data-i="${i}" value="${c[k]||""}" placeholder="0"></label>`).join("")}
       </div>`:`
       <div class="cc-vagas">
-        <div class="cc-vaga"><div class="vv">${c.M||0}</div><div class="ll">Manhã</div></div>
-        <div class="cc-vaga"><div class="vv">${c.T||0}</div><div class="ll">Tarde</div></div>
-        <div class="cc-vaga"><div class="vv">${c.N||0}</div><div class="ll">Noite</div></div>
+        ${PERIODOS.map(([k,l])=>`<div class="cc-vaga"><div class="vv">${c[k]||0}</div><div class="ll">${l}</div></div>`).join("")}
       </div>
       <div class="cc-total"><span>Capacidade total</span><b>${cap}</b></div>
       <div class="cc-ocup">Ocupadas hoje: <b>${ocup}</b> · <span class="${ocup>cap?"neg":""}">${livres} livres</span></div>`;
@@ -697,6 +820,7 @@ function renderCampos(){
       <button class="btn-detalhes" data-cancelar="${i}">Cancelar</button>`:`
       <button class="btn-editar" data-editar="${i}">Editar</button>
       <button class="btn-detalhes ${detAberto?"aberto":""}" data-det="${i}">Detalhes</button>
+      <button class="btn-detalhes ${ocupAberto?"aberto":""}" data-ocup="${i}">Ocupações</button>
       <button class="btn-remover" data-rm="${i}">Remover</button>`;
     const detalhe=detAberto?`
       <div class="cc-detalhe">
@@ -705,10 +829,25 @@ function renderCampos(){
           <label>Horário de estágio<input type="text" class="inp-det" data-i="${i}" data-c="horario" placeholder="Ex.: 7h às 12h (manhã) / 13h às 18h (tarde)" value="${esc(c.horario)}"></label>
           <label>Contato do responsável<input type="text" class="inp-det" data-i="${i}" data-c="contato" placeholder="Ex.: Enf. Maria Silva — (31) 99999-0000" value="${esc(c.contato)}"></label>
         </div>
-        <div class="oc-titulo">Vagas ocupadas neste campo</div>
-        <div class="oc-form" style="grid-template-columns:80px 110px 1.1fr 110px 1fr 1fr auto">
+        <div class="det-grid" style="grid-template-columns:1fr 1fr;margin-top:12px">
+          <label>Crachás<textarea class="inp-det" data-i="${i}" data-c="crachas" placeholder="Ex.: crachá branco com foto, retirar na portaria...">${c.crachas||""}</textarea></label>
+          <label>Preceptores<textarea class="inp-det" data-i="${i}" data-c="preceptores" placeholder="Ex.: Enf. João (manhã), Enf. Ana (tarde)...">${c.preceptores||""}</textarea></label>
+        </div>
+        ${c.regime==="3x2"?`
+        <div class="oc-titulo">Escala Par / Ímpar (3x2)</div>
+        <div class="dica" style="margin:-4px 0 10px">Indique qual turma fica no <b>Par</b> e qual no <b>Ímpar</b>. A tabela mostra, mês a mês, em quais dias cada uma vai — já com a troca automática nos meses de 31/29 dias. Dias da escala que caem no fim de semana não têm estágio.</div>
+        <div class="det-grid" style="grid-template-columns:1fr 1fr">
+          <label>Turma no Par<input type="text" class="inp-turma3x2" data-i="${i}" data-c="turmaPar" value="${esc(c.turmaPar)}" placeholder="Ex.: 251"></label>
+          <label>Turma no Ímpar<input type="text" class="inp-turma3x2" data-i="${i}" data-c="turmaImpar" value="${esc(c.turmaImpar)}" placeholder="Ex.: 252"></label>
+        </div>
+        <div style="overflow:auto;max-height:300px;margin:12px 0 4px">${tabelaPlantaoHTML((c.turmaPar||"Par")+" (par)",(c.turmaImpar||"Ímpar")+" (ímpar)",c.turmaPar||"Par",c.turmaImpar||"Ímpar")}</div>`:""}
+      </div>`:"";
+    const ocupacoes=ocupAberto?`
+      <div class="cc-detalhe">
+        <div class="oc-titulo" style="margin-top:0">Vagas ocupadas neste campo</div>
+        <div class="oc-form" style="grid-template-columns:80px 130px 1.1fr 110px 1fr 1fr auto">
           <label>Vagas<input type="number" min="1" max="999" placeholder="0" data-ocv="${i}"></label>
-          <label>Período<select data-ocp="${i}"><option value="Todos">Todos</option><option value="Manhã">Manhã</option><option value="Tarde">Tarde</option><option value="Noite">Noite</option></select></label>
+          <label>Período<select data-ocp="${i}"><option value="Todos">Todos</option>${PERIODOS.map(([,l])=>`<option value="${l}">${l}</option>`).join("")}</select></label>
           <label>Unidade ocupante<select data-ocu="${i}"><option value="Belo Horizonte">Belo Horizonte</option><option value="Contagem">Contagem</option><option value="Venda Nova">Venda Nova</option></select></label>
           <label>Plantão<select data-ocpl="${i}"><option value="Diário">Diário</option><option value="Ímpar">Ímpar</option><option value="Par">Par</option></select></label>
           <label>De<input type="date" data-ocde="${i}"></label>
@@ -734,6 +873,7 @@ function renderCampos(){
       ${corpo}
       <div class="cc-acoes">${acoes}</div>
       ${detalhe}
+      ${ocupacoes}
     </div>`;
   }).join("")
   :`<div class="oc-vazio" style="grid-column:1/-1;padding:20px;text-align:center">Nenhum campo cadastrado ainda — use o formulário acima para adicionar o primeiro.</div>`;
@@ -753,9 +893,7 @@ function renderCampos(){
       c.nome=nome;
       c.unidade=g("unidade").value;
       c.regime=g("regime").value;
-      c.M=Math.max(0,parseInt(g("M").value)||0);
-      c.T=Math.max(0,parseInt(g("T").value)||0);
-      c.N=Math.max(0,parseInt(g("N").value)||0);
+      PERIODOS.forEach(([k])=>{c[k]=Math.max(0,parseInt(g(k).value)||0);});
       await sincronizarCampo(c);
       editandoCampo.delete(i);renderCampos();
     });
@@ -767,11 +905,26 @@ function renderCampos(){
       renderCampos();
     });
   });
+  document.querySelectorAll("[data-ocup]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const i=+btn.dataset.ocup;
+      ocupacoesAbertas.has(i)?ocupacoesAbertas.delete(i):ocupacoesAbertas.add(i);
+      renderCampos();
+    });
+  });
   document.querySelectorAll(".inp-det").forEach(inp=>{
     inp.addEventListener("change",async()=>{
       const c=campos[+inp.dataset.i];
       c[inp.dataset.c]=inp.value.trim();
       await sincronizarCampo(c); // salva sem redesenhar, para não perder o foco
+    });
+  });
+  document.querySelectorAll(".inp-turma3x2").forEach(inp=>{
+    inp.addEventListener("change",async()=>{
+      const c=campos[+inp.dataset.i];
+      c[inp.dataset.c]=inp.value.trim();
+      await sincronizarCampo(c);
+      renderCampos(); // redesenha para atualizar a tabela de escala com o nome da turma
     });
   });
   document.querySelectorAll("[data-ocadd]").forEach(btn=>{
@@ -807,7 +960,7 @@ function renderCampos(){
       if(!confirm(`Remover o campo "${c.nome}"?`))return;
       const{error}=await supabaseClient.from("campos").delete().eq("id",c.id);
       if(error){alert("Erro ao remover campo: "+error.message);return;}
-      campos.splice(idx,1);detalhesAbertos.clear();renderCampos();
+      campos.splice(idx,1);detalhesAbertos.clear();ocupacoesAbertas.clear();editandoCampo.clear();renderCampos();
     });
   });
 }
@@ -821,20 +974,22 @@ document.getElementById("fcRegime").addEventListener("click",e=>{
 document.getElementById("fcAdd").addEventListener("click",async()=>{
   const nome=document.getElementById("fcNome").value.trim();
   if(!nome){document.getElementById("fcNome").focus();return;}
+  const numId=id=>Math.max(0,parseInt(document.getElementById(id).value)||0);
   const novo={
     nome,
     unidade:document.getElementById("fcUnidade").value,
     regime:regimeNovo,
-    M:Math.max(0,parseInt(document.getElementById("fcM").value)||0),
-    T:Math.max(0,parseInt(document.getElementById("fcT").value)||0),
-    N:Math.max(0,parseInt(document.getElementById("fcN").value)||0)
+    M:numId("fcM"),T:numId("fcT"),N:numId("fcN"),Sab:numId("fcSab"),Dom:numId("fcDom")
   };
+  // insere só as colunas básicas (sempre existem); Sáb/Dom são salvos em seguida (resiliente)
   const{data,error}=await supabaseClient.from("campos").insert({
     nome:novo.nome,unidade:novo.unidade,regime:novo.regime,m:novo.M,t:novo.T,n:novo.N
   }).select().single();
   if(error){alert("Erro ao salvar campo: "+error.message);return;}
-  campos.push({...novo,id:data.id,docs:"",horario:"",contato:"",ocupacoes:[]});
-  ["fcNome","fcM","fcT","fcN"].forEach(id=>document.getElementById(id).value="");
+  const campoNovo={...novo,id:data.id,docs:"",horario:"",contato:"",crachas:"",preceptores:"",turmaPar:"",turmaImpar:"",ocupacoes:[]};
+  campos.push(campoNovo);
+  if(novo.Sab||novo.Dom)await sincronizarCampo(campoNovo); // persiste Sáb/Dom se preenchidos
+  ["fcNome","fcM","fcT","fcN","fcSab","fcDom"].forEach(id=>document.getElementById(id).value="");
   renderCampos();
 });
 
@@ -852,34 +1007,85 @@ function aplicarFiltroTurno(){
   });
 }
 
-// ---- editor de datas do CMM (rodapé da unidade; vale p/ as 3 unidades) ----
-function renderCmmEditor(){
-  const ref=UNIDADES[0].turmas;
-  document.getElementById("cmmGrid").innerHTML=ref.map(t=>
-    `<label>${t.id}<input type="date" class="inp-cmm" data-turma="${t.id}" value="${t.cmm}"></label>`
-  ).join("");
+// ---- editor de datas das turmas (rodapé da unidade; vale p/ as 3 unidades) ----
+const CAMPOS_DATA=[
+  ["e1i","Início Est. I"],["e1f","Final Est. I"],
+  ["e2i","Início Est. II"],["e2f","Final Est. II"],
+  ["cmm","Final do CMM"],["termino","Data de término"]
+];
+async function salvarTurma(t){
+  return await supabaseClient.from("turmas").upsert({
+    id:t.id,tipo:t.tipo||"regular",ordem:t.ordem||0,unidades:t.unidades||"bh,contagem,vendanova",
+    e1i:t.e1i,e1f:t.e1f,e2i:t.e2i,e2f:t.e2f,cmm:t.cmm,termino:t.termino
+  },{onConflict:"id"});
 }
-document.getElementById("btnCmmToggle").addEventListener("click",()=>{
-  const ed=document.getElementById("cmmEditor"),btn=document.getElementById("btnCmmToggle");
+function renderDatasEditor(){
+  const lista=turmaLista.slice().sort((a,b)=>((a.ordem||0)-(b.ordem||0))||(a.id<b.id?-1:1));
+  const head=`<tr><th>Turma</th><th>Tipo</th><th>Unidades</th>${CAMPOS_DATA.map(([,l])=>`<th>${l}</th>`).join("")}<th></th></tr>`;
+  const body=lista.map(t=>{
+    const unis=(t.unidades||"bh,contagem,vendanova").split(",").map(s=>NOME_UNI[s.trim()]||s).join(", ");
+    const tcls=t.tipo==="especial"?"ttipo-especial":t.tipo==="sabado"?"ttipo-sabado":"";
+    return `<tr>
+      <td class="turma">${t.id}</td>
+      <td class="${tcls}" style="font-weight:700;font-size:11.5px;text-transform:capitalize">${t.tipo||"regular"}</td>
+      <td><span class="tuni">${unis}</span></td>
+      ${CAMPOS_DATA.map(([k])=>`<td><input type="date" class="inp-data" data-turma="${t.id}" data-campo="${k}" value="${t[k]||""}"></td>`).join("")}
+      <td><button class="btn-remover" data-rmturma="${t.id}">Remover</button></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("datasGrid").innerHTML=`<table class="tab-datas"><thead>${head}</thead><tbody>${body}</tbody></table>`;
+  document.querySelectorAll("[data-rmturma]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const id=btn.dataset.rmturma;
+      if(!confirm(`Remover a turma "${id}"? As datas dela serão apagadas.`))return;
+      const{error}=await supabaseClient.from("turmas").delete().eq("id",id);
+      if(error)console.error("Erro ao remover turma:",error);
+      turmaLista=turmaLista.filter(t=>t.id!==id);
+      montarUnidades();recalcularPeriodo();render();renderDatasEditor();
+    });
+  });
+}
+document.getElementById("btnDatasToggle").addEventListener("click",()=>{
+  const ed=document.getElementById("datasEditor"),btn=document.getElementById("btnDatasToggle");
   const abrir=ed.style.display==="none";
   ed.style.display=abrir?"":"none";
   btn.classList.toggle("aberto",abrir);
-  btn.textContent=(abrir?"🔓 ":"🔒 ")+"Editar datas do Final do CMM";
+  btn.textContent=(abrir?"🔓 ":"🔒 ")+"Editar datas das turmas";
 });
-document.getElementById("btnCmmSalvar").addEventListener("click",async()=>{
-  const updates=[];
-  document.querySelectorAll(".inp-cmm").forEach(inp=>{
+document.getElementById("btnAddTurma").addEventListener("click",async()=>{
+  const idEl=document.getElementById("ntId"),id=idEl.value.trim();
+  if(!id){idEl.focus();return;}
+  if(turmaLista.some(t=>t.id.toLowerCase()===id.toLowerCase())){alert("Já existe uma turma com esse nome.");return;}
+  const g=x=>document.getElementById(x).value;
+  const uni=g("ntUni");
+  const nova={
+    id, tipo:g("ntTipo"), unidades:uni==="todas"?"bh,contagem,vendanova":uni,
+    ordem:Math.max(0,...turmaLista.map(t=>t.ordem||0))+1,
+    e1i:g("ntE1i"),e1f:g("ntE1f"),e2i:g("ntE2i"),e2f:g("ntE2f"),cmm:g("ntCmm"),termino:g("ntTermino")
+  };
+  for(const[k,l] of CAMPOS_DATA){if(!nova[k]){alert("Preencha todas as datas da turma ("+l+").");return;}}
+  const{error}=await salvarTurma(nova);
+  if(error)console.error("Turma não persistida (rode o SQL da tabela 'turmas'):",error);
+  turmaLista.push(nova);
+  montarUnidades();recalcularPeriodo();
+  ["ntId","ntE1i","ntE1f","ntE2i","ntE2f","ntCmm","ntTermino"].forEach(x=>document.getElementById(x).value="");
+  render();renderDatasEditor();
+});
+document.getElementById("btnDatasSalvar").addEventListener("click",async()=>{
+  const porTurma={};
+  document.querySelectorAll(".inp-data").forEach(inp=>{
     if(!inp.value)return;
-    const turma=inp.dataset.turma;
-    UNIDADES.forEach(u=>{const t=u.turmas.find(x=>x.id===turma);if(t)t.cmm=inp.value;});
-    updates.push({turma,cmm:inp.value});
+    const turma=inp.dataset.turma,campo=inp.dataset.campo;
+    porTurma[turma]=porTurma[turma]||{id:turma};
+    porTurma[turma][campo]=inp.value;
+    const t=turmaLista.find(x=>x.id===turma);if(t)t[campo]=inp.value;
   });
-  const{error}=await supabaseClient.from("turma_cmm").upsert(updates,{onConflict:"turma"});
-  if(error){alert("Erro ao salvar datas do CMM: "+error.message);return;}
-  const av=document.getElementById("avisoCmm");
+  const{error}=await supabaseClient.from("turmas").upsert(Object.values(porTurma),{onConflict:"id"});
+  if(error)console.error("Datas não persistidas (rode o SQL da tabela 'turmas'):",error);
+  montarUnidades();recalcularPeriodo();
+  const av=document.getElementById("avisoDatas");
   av.classList.add("mostrar");clearTimeout(av._t);av._t=setTimeout(()=>av.classList.remove("mostrar"),1500);
-  render();          // atualiza gantt e tabela da unidade atual
-  renderCmmEditor(); // reflete os valores salvos
+  render();renderDatasEditor();
 });
 
 // ---- tooltips ----
@@ -899,21 +1105,34 @@ function ligarTooltips(){
 async function iniciar(){
   const status=document.getElementById("statusCarregamento");
   status.textContent="Carregando dados...";
-  const[{data:alunosRows,error:errA},{data:camposRows,error:errC},{data:cmmRows,error:errM}]=await Promise.all([
+  const[{data:alunosRows,error:errA},{data:camposRows,error:errC},{data:turmasRows,error:errM}]=await Promise.all([
     supabaseClient.from("alunos").select("*"),
     supabaseClient.from("campos").select("*").order("created_at",{ascending:true}),
-    supabaseClient.from("turma_cmm").select("*")
+    supabaseClient.from("turmas").select("*")
   ]);
   if(errA)console.error("Erro ao carregar alunos:",errA);
   if(errC)console.error("Erro ao carregar campos:",errC);
-  if(errM)console.error("Erro ao carregar datas do CMM:",errM);
-  status.textContent=(errA||errC||errM)
+  if(errM)console.error("Erro ao carregar turmas (rode o SQL da tabela 'turmas'):",errM);
+  status.textContent=(errA||errC)
     ?"Não foi possível conectar ao banco de dados — mostrando o cronograma sem os nº de alunos e campos salvos. Verifique sua conexão e recarregue a página."
     :"";
-  // aplica as datas do CMM salvas (valem para as 3 unidades)
-  (cmmRows||[]).forEach(r=>{
-    UNIDADES.forEach(u=>{const t=u.turmas.find(x=>x.id===r.turma);if(t)t.cmm=r.cmm;});
-  });
+  // turmas: usa as do banco; se a tabela existir e estiver vazia, semeia com as turmas base
+  if(!errM){
+    if(turmasRows&&turmasRows.length){
+      turmaLista=turmasRows.map(r=>({
+        id:r.id,tipo:r.tipo||"regular",ordem:r.ordem||0,unidades:r.unidades||"bh,contagem,vendanova",
+        e1i:r.e1i,e1f:r.e1f,e2i:r.e2i,e2f:r.e2f,cmm:r.cmm,termino:r.termino
+      }));
+    }else{
+      // primeira vez: grava as turmas base no banco
+      await supabaseClient.from("turmas").upsert(
+        turmaLista.map(t=>({id:t.id,tipo:t.tipo,ordem:t.ordem,unidades:t.unidades,
+          e1i:t.e1i,e1f:t.e1f,e2i:t.e2i,e2f:t.e2f,cmm:t.cmm,termino:t.termino})),
+        {onConflict:"id"}
+      );
+    }
+  }
+  montarUnidades();recalcularPeriodo();
   (alunosRows||[]).forEach(r=>{
     alunos[r.unidade]=alunos[r.unidade]||{};
     alunos[r.unidade][r.turma]=alunos[r.unidade][r.turma]||{};
@@ -921,13 +1140,14 @@ async function iniciar(){
   });
   campos=(camposRows||[]).map(r=>({
     id:r.id,nome:r.nome,unidade:r.unidade,regime:r.regime||"diaria",
-    M:r.m||0,T:r.t||0,N:r.n||0,
-    docs:r.docs||"",horario:r.horario||"",contato:r.contato||"",
+    M:r.m||0,T:r.t||0,N:r.n||0,Sab:r.sab||0,Dom:r.dom||0,
+    docs:r.docs||"",horario:r.horario||"",contato:r.contato||"",crachas:r.crachas||"",preceptores:r.preceptores||"",
+    turmaPar:r.turma_par||"",turmaImpar:r.turma_impar||"",
     ocupacoes:r.ocupacoes||[]
   }));
-  render();          // prepara a vista de unidade em segundo plano
-  renderCmmEditor(); // preenche o editor de datas do CMM
-  renderGeral();     // painel inicial
+  render();            // prepara a vista de unidade em segundo plano
+  renderDatasEditor(); // preenche o editor de datas/turmas
+  renderGeral();       // painel inicial
 }
 iniciar();
 </script>
